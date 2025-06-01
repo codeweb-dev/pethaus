@@ -5,7 +5,6 @@ include('../conn.php');
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors = [];
 
-    // Required fields
     $requiredFields = [
         'owner_id',
         'name',
@@ -24,12 +23,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // If "Others", ensure 'other_species' is filled
     if ($_POST['species'] === 'Others' && empty(trim($_POST['other_species']))) {
         $errors['other_species'] = "Please specify the species.";
     }
 
-    // Validate photo upload
     if (!isset($_FILES['photo']) || $_FILES['photo']['error'] !== UPLOAD_ERR_OK) {
         $errors['photo'] = "Photo is required.";
     }
@@ -41,7 +38,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // If no errors, handle photo upload
     $owner_id = trim($_POST['owner_id']);
     $name = trim($_POST['name']);
     $species = $_POST['species'] === "Others" ? trim($_POST['other_species']) : trim($_POST['species']);
@@ -69,6 +65,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
+    if ($species === 'Dog' || $species === 'Cat') {
+        $breedTable = $species === 'Dog' ? 'dogs' : 'cats';
+        $checkQuery = "SELECT COUNT(*) FROM $breedTable WHERE name = ?";
+        $stmt = $conn->prepare($checkQuery);
+        $stmt->bind_param("s", $breed);
+        $stmt->execute();
+        $stmt->bind_result($count);
+        $stmt->fetch();
+        $stmt->close();
+
+        if ($count == 0 && !empty($breed)) {
+            $insertBreedQuery = "INSERT INTO $breedTable (name) VALUES (?)";
+            $stmt = $conn->prepare($insertBreedQuery);
+            $stmt->bind_param("s", $breed);
+            $stmt->execute();
+            $stmt->close();
+        }
+    }
+
     $stmt = $conn->prepare("INSERT INTO pet_records (owner_id, name, species, breed, color, sex, birthdate, photo, age, markings) 
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
     if ($stmt === false) {
@@ -80,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($stmt->execute()) {
         $stmt->close();
         $_SESSION['success'] = "Successfully added new pet.";
-        header("Location: ../admin/pet-records.php");
+        header("Location: ../admin/pet-records.php?success=Successfully added new pet.");
         exit();
     } else {
         $stmt->close();

@@ -45,6 +45,13 @@ if ($result) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="../assets/style.css">
+
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <title>Pet Record</title>
 </head>
 
@@ -130,8 +137,8 @@ if ($result) {
 
                                             <div class="mb-3 col-md-6">
                                                 <label for="species" class="form-label">Species</label>
-                                                <select class="form-control <?php echo isset($errors['species']) ? 'is-invalid' : ''; ?>" name="species" id="species" required onchange="toggleOtherSpeciesInput()">
-                                                    <option value="" disabled <?php echo empty($old['species']) ? 'selected' : ''; ?>>Select species</option>
+                                                <select class="form-control <?php echo isset($errors['species']) ? 'is-invalid' : ''; ?>" name="species" id="species" onchange="toggleOtherSpeciesInput()">
+                                                    <option value="" disabled selecteD>Select species</option>
                                                     <option value="Dog">Dog</option>
                                                     <option value="Cat">Cat</option>
                                                     <option value="Chicken">Chicken</option>
@@ -169,7 +176,7 @@ if ($result) {
 
                                             <div class="mb-3 col-md-6" id="breed-container">
                                                 <label for="breed" class="form-label">Breed</label>
-                                                <input type="text" class="form-control <?php echo isset($errors['breed']) ? 'is-invalid' : ''; ?>" placeholder="Enter breed" name="breed" id="breed" required>
+                                                <input type="text" class="form-control <?php echo isset($errors['breed']) ? 'is-invalid' : ''; ?>" placeholder="Enter breed" name="breed" id="breed">
                                                 <?php if (isset($errors['breed'])): ?>
                                                     <div class="invalid-feedback"><?php echo htmlspecialchars($errors['breed']); ?></div>
                                                 <?php endif; ?>
@@ -418,89 +425,7 @@ if ($result) {
 
     <?php include('../components/toast.php'); ?>
     <?php include('../components/script.php'); ?>
-    <script>
-        document.getElementById('searchInput').addEventListener('input', function() {
-            const searchValue = this.value.toLowerCase();
-            const rows = document.querySelectorAll('#staffTableBody tr');
-
-            rows.forEach(row => {
-                const rowText = row.textContent.toLowerCase();
-                if (rowText.includes(searchValue)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-
-        function toggleOtherSpeciesInput() {
-            const speciesSelect = document.getElementById('species');
-            const otherContainer = document.getElementById('otherSpeciesContainer');
-
-            if (speciesSelect.value === 'Others') {
-                otherContainer.classList.remove('d-none');
-                document.getElementById('other_species').setAttribute('required', 'required');
-            } else {
-                otherContainer.classList.add('d-none');
-                document.getElementById('other_species').removeAttribute('required');
-            }
-        }
-
-        const dogBreeds = ["Akita", "American Bulldog", "Australian Shepherd", "Alaskan Malamute", "Airedale Terrier", "Anatolian Shepherd", "Afghan Hound", "Beagle", "Boxer", "Boston Terrier", "Border Collie", "Bichon Frise", "Bernese Mountain Dog", "Bull Terrier", "Belgian Malinois", "Bloodhound", "Chihuahua", "Cocker Spaniel", "Cavalier King Charles Spaniel", "Chow Chow", "Collie", "Chesapeake Bay Retriever", "Cairn Terrier", "Cardigan Welsh Corgi", "Clumber Spaniel", "Dachshund", "Dalmatian", "Doberman Pinscher", "Dogo Argentino", "Dutch Shepherd", "Dandie Dinmont Terrier", "English Bulldog", "English Setter", "English Springer Spaniel", "Entlebucher Mountain Dog", "English Foxhound", "French Bulldog", "Flat-Coated Retriever", "Finnish Spitz", "Finnish Lapphund", "Field Spaniel", "Fox Terrier", "Golden Retriever", "German Shepherd", "Great Dane", "Greyhound", "Glen of Imaal Terrier", "Gordon Setter", "Giant Schnauzer", "German Shorthaired Pointer", "Husky (Siberian Husky)", "Havanese", "Harrier", "Hungarian Vizsla", "Hungarian Puli", "Hound (various breeds)", "Irish Setter", "Irish Terrier", "Irish Wolfhound", "Icelandic Sheepdog", "Italian Greyhound", "Jack Russell Terrier", "Japanese Chin", "Japanese Spitz", "King Charles Spaniel", "Keeshond", "Kerry Blue Terrier", "Kuvasz", "Komondor", "Labrador Retriever", "Lhasa Apso", "Lowchen", "Lagotto Romagnolo", "Maltese", "Mastiff (English Mastiff)", "Miniature Schnauzer", "Manchester Terrier", "Norwegian Lundehund", "Newfoundland", "Norfolk Terrier", "Neapolitan Mastiff", "Norwegian Elkhound", "Otterhound", "Old English Sheepdog", "Olde English Bulldogge", "Poodle", "Pembroke Welsh Corgi", "Papillon", "Pug", "Portuguese Water Dog", "Polish Lowland Sheepdog", "Queensland Heeler (Australian Cattle Dog)", "Rottweiler", "Rhodesian Ridgeback", "Russian Toy", "Rat Terrier", "Shih Tzu", "Samoyed", "Saint Bernard", "Scottish Terrier", "Staffordshire Bull Terrier", "Shar Pei", "Tibetan Mastiff", "Toy Fox Terrier", "Treeing Walker Coonhound", "Tervuren", "Utonagan", "Vizsla", "Volpino Italiano", "Weimaraner", "Welsh Springer Spaniel", "West Highland White Terrier", "Whippet", "Wire Fox Terrier", "Xoloitzcuintli (Mexican Hairless Dog)", "Yorkshire Terrier", "Zwergspitz (Pomeranian)", "Zuchon (Shichon, Shih Tzu + Bichon mix)"];
-
-        const catBreeds = ["Siamese", "Persian", "Maine Coon", "Ragdoll", "British Shorthair", "Bengal", "Sphynx", "Scottish Fold", "Abyssinian", "Birman", "Oriental Shorthair", "Devon Rex", "Russian Blue", "Norwegian Forest Cat", "Exotic Shorthair", "Turkish Angora", "Cornish Rex", "Himalayan", "Balinese", "Tonkinese", "American Shorthair", "Manx", "LaPerm", "Singapura", "Somali", "Ocicat", "Bombay", "Chartreux", "Turkish Van", "Ragamuffin"];
-
-        const speciesSelect = document.getElementById('species');
-        const breedContainer = document.getElementById('breed-container');
-
-        speciesSelect.addEventListener('change', function() {
-            const selectedSpecies = this.value;
-            breedContainer.innerHTML = '';
-
-            const label = document.createElement('label');
-            label.textContent = 'Breed';
-            label.className = 'form-label';
-
-            const inputGroup = document.createElement('div');
-            inputGroup.className = 'input-group';
-
-            if (selectedSpecies === 'Dog' || selectedSpecies === 'Cat') {
-                const select = document.createElement('select');
-                select.name = 'breed';
-                select.id = 'breed';
-                select.className = 'form-select';
-                select.required = true;
-
-                const defaultOption = document.createElement('option');
-                defaultOption.value = '';
-                defaultOption.textContent = 'Select breed';
-                select.appendChild(defaultOption);
-
-                const breeds = (selectedSpecies === 'Dog') ? dogBreeds : catBreeds;
-                breeds.forEach(breed => {
-                    const option = document.createElement('option');
-                    option.value = breed;
-                    option.textContent = breed;
-                    select.appendChild(option);
-                });
-
-                inputGroup.appendChild(select);
-            } else {
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.className = 'form-control';
-                input.placeholder = 'Enter breed';
-                label.textContent = 'Please specify breed';
-                input.name = 'breed';
-                input.id = 'breed';
-                input.required = true;
-                inputGroup.appendChild(input);
-            }
-
-            breedContainer.appendChild(label);
-            breedContainer.appendChild(inputGroup);
-        });
-    </script>
+    <?php include('../components/pet-records-script.php'); ?>
 </body>
 
 </html>

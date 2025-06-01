@@ -110,6 +110,14 @@ if ($result) {
                                             </div>
 
                                             <div class="mb-3">
+                                                <label for="category" class="form-label">Category</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="fa-solid fa-boxes-stacked"></i></span>
+                                                    <input type="text" class="form-control" placeholder="Enter product unit measure" name="category" id="category" required>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-3">
                                                 <label for="quantity" class="form-label">Quantity</label>
                                                 <div class="input-group">
                                                     <span class="input-group-text"><i class="fa-solid fa-boxes-stacked"></i></span>
@@ -137,7 +145,9 @@ if ($result) {
                                 <th class="p-3" scope="col">Description</th>
                                 <th class="p-3" scope="col">Price</th>
                                 <th class="p-3" scope="col">Unit of measure</th>
+                                <th class="p-3" scope="col">Category</th>
                                 <th class="p-3" scope="col">Quantity</th>
+                                <th class="p-3" scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody class="text-muted" id="staffTableBody">
@@ -148,7 +158,62 @@ if ($result) {
                                     <td class="p-3"><?php echo $product['description']; ?></td>
                                     <td class="p-3">₱<?php echo $product['price']; ?></td>
                                     <td class="p-3"><?php echo $product['unit_of_measure']; ?></td>
+                                    <td class="p-3"><?php echo $product['category']; ?></td>
                                     <td class="p-3"><?php echo $product['quantity']; ?></td>
+                                    <td class="p-3">
+                                        <i class="fa-solid fa-pen-to-square" title="edit pet" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#editProductModal<?php echo $product['product_id']; ?>"></i>
+
+                                        <div class="modal fade" id="editProductModal<?php echo $product['product_id']; ?>" tabindex="-1" aria-labelledby="editProductModalLabel<?php echo $product['product_id']; ?>" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <form method="POST" action="../actions/update_product.php">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Edit Product: <?php echo htmlspecialchars($product['name']); ?></h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
+
+                                                            <div class="mb-3">
+                                                                <label for="name" class="form-label">Name</label>
+                                                                <input type="text" class="form-control" name="name" value="<?php echo htmlspecialchars($product['name']); ?>" required>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label for="description" class="form-label">Description</label>
+                                                                <textarea class="form-control" name="description" rows="3" required><?php echo htmlspecialchars($product['description']); ?></textarea>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label for="price" class="form-label">Price</label>
+                                                                <input type="number" step="0.01" class="form-control" name="price" value="<?php echo htmlspecialchars($product['price']); ?>" required>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label for="unit_of_measure" class="form-label">Unit of Measure</label>
+                                                                <input type="text" class="form-control" name="unit_of_measure" value="<?php echo htmlspecialchars($product['unit_of_measure']); ?>" required>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label for="category" class="form-label">Category</label>
+                                                                <input type="text" class="form-control" name="category" value="<?php echo htmlspecialchars($product['category']); ?>" required>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label for="quantity" class="form-label">Quantity</label>
+                                                                <input type="number" class="form-control" name="quantity" value="<?php echo htmlspecialchars($product['quantity']); ?>" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                            <button type="submit" class="btn bg-black text-white">Update Product</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>

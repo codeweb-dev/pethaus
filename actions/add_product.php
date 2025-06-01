@@ -6,10 +6,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = trim($_POST['description']);
     $price = trim($_POST['price']);
     $unit_of_measure = trim($_POST['unit_of_measure']);
+    $category = trim($_POST['category']);
     $quantity = trim($_POST['quantity']);
 
-    $stmt = $conn->prepare("INSERT INTO products (name, description, price, unit_of_measure, quantity) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssdsi", $name, $description, $price, $unit_of_measure, $quantity);
+    $stmt = $conn->prepare("INSERT INTO products (name, description, price, unit_of_measure, category, quantity) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssdssi", $name, $description, $price, $unit_of_measure, $category, $quantity);
 
     if ($stmt->execute()) {
         $stmt->close();
