@@ -1,0 +1,2 @@
+can store list of breed in Cat & Dog
+can you camera to take a pic in pet record
