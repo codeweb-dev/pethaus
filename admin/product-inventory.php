@@ -3,6 +3,10 @@ include('../conn.php');
 session_start();
 include('../actions/check_user.php');
 
+$form_errors = $_SESSION['form_errors'] ?? [];
+$old = $_SESSION['old'] ?? [];
+unset($_SESSION['form_errors'], $_SESSION['old']);
+
 $limit = 10;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $page = max($page, 1);
@@ -112,7 +116,7 @@ if ($result) {
                         <div class="modal fade" id="addProduct" tabindex="-1" aria-labelledby="addProductLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
-                                    <form method="POST" action="../actions/add_product.php">
+                                    <form method="POST" action="../actions/add_product.php" novalidate>
                                         <div class="modal-header">
                                             <h1 class="modal-title fs-5 fw-bold" id="addNewStaffLabel">Add new product</h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -120,50 +124,99 @@ if ($result) {
                                         <div class="modal-body">
                                             <div class="mb-3">
                                                 <label for="name" class="form-label">Name</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fa-solid fa-boxes-stacked"></i></span>
-                                                    <input type="text" class="form-control" placeholder="Enter product name" name="name" id="name" required>
+                                                <input
+                                                    type="text"
+                                                    class="form-control <?php echo isset($form_errors['name']) ? 'is-invalid' : ''; ?>"
+                                                    placeholder="Enter product name"
+                                                    name="name"
+                                                    id="name"
+                                                    value="<?php echo htmlspecialchars($old['name'] ?? ''); ?>">
+                                                <div class="invalid-feedback">
+                                                    <?php echo $form_errors['name'] ?? ''; ?>
                                                 </div>
                                             </div>
 
                                             <div class="mb-3">
                                                 <label for="description" class="form-label">Description</label>
                                                 <div class="input-group">
-                                                    <textarea class="form-control" id="description" placeholder="Enter product description" name="description" rows="3" required></textarea>
+                                                    <textarea
+                                                        class="form-control <?php echo isset($form_errors['description']) ? 'is-invalid' : ''; ?>"
+                                                        id="description"
+                                                        placeholder="Enter product description"
+                                                        name="description"
+                                                        rows="3"
+                                                        required><?php echo htmlspecialchars($old['description'] ?? ''); ?></textarea>
+                                                    <div class="invalid-feedback">
+                                                        <?php echo $form_errors['description'] ?? ''; ?>
+                                                    </div>
                                                 </div>
                                             </div>
 
                                             <div class="mb-3">
                                                 <label for="price" class="form-label">Price</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fa-solid fa-boxes-stacked"></i></span>
-                                                    <input type="number" class="form-control" placeholder="Enter product price" name="price" id="price" step="0.01" min="0" required>
+                                                <input
+                                                    type="number"
+                                                    class="form-control <?php echo isset($form_errors['price']) ? 'is-invalid' : ''; ?>"
+                                                    placeholder="Enter product price"
+                                                    name="price"
+                                                    id="price"
+                                                    step="0.01"
+                                                    min="0"
+                                                    value="<?php echo htmlspecialchars($old['price'] ?? ''); ?>"
+                                                    required>
+                                                <div class="invalid-feedback">
+                                                    <?php echo $form_errors['price'] ?? ''; ?>
                                                 </div>
                                             </div>
 
                                             <div class="mb-3">
                                                 <label for="unit_of_measure" class="form-label">Unit of measure</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fa-solid fa-boxes-stacked"></i></span>
-                                                    <input type="text" class="form-control" placeholder="Enter product unit measure" name="unit_of_measure" id="unit_of_measure" required>
+                                                <input
+                                                    type="text"
+                                                    class="form-control <?php echo isset($form_errors['unit_of_measure']) ? 'is-invalid' : ''; ?>"
+                                                    placeholder="Enter product unit measure"
+                                                    name="unit_of_measure"
+                                                    id="unit_of_measure"
+                                                    value="<?php echo htmlspecialchars($old['unit_of_measure'] ?? ''); ?>"
+                                                    required>
+                                                <div class="invalid-feedback">
+                                                    <?php echo $form_errors['unit_of_measure'] ?? ''; ?>
                                                 </div>
                                             </div>
 
                                             <div class="mb-3">
                                                 <label for="category" class="form-label">Category</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fa-solid fa-boxes-stacked"></i></span>
-                                                    <input type="text" class="form-control" placeholder="Enter product unit measure" name="category" id="category" required>
+                                                <input
+                                                    type="text"
+                                                    class="form-control <?php echo isset($form_errors['category']) ? 'is-invalid' : ''; ?>"
+                                                    placeholder="Enter product category"
+                                                    name="category"
+                                                    id="category"
+                                                    value="<?php echo htmlspecialchars($old['category'] ?? ''); ?>"
+                                                    required>
+                                                <div class="invalid-feedback">
+                                                    <?php echo $form_errors['category'] ?? ''; ?>
                                                 </div>
                                             </div>
 
                                             <div class="mb-3">
                                                 <label for="quantity" class="form-label">Quantity</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fa-solid fa-boxes-stacked"></i></span>
-                                                    <input type="number" class="form-control" placeholder="Enter product quantity" name="quantity" id="quantity" required>
+                                                <input
+                                                    type="number"
+                                                    class="form-control <?php echo isset($form_errors['quantity']) ? 'is-invalid' : ''; ?>"
+                                                    placeholder="Enter product quantity"
+                                                    name="quantity"
+                                                    id="quantity"
+                                                    value="<?php echo htmlspecialchars($old['quantity'] ?? ''); ?>"
+                                                    required>
+                                                <div class="invalid-feedback">
+                                                    <?php echo $form_errors['quantity'] ?? ''; ?>
                                                 </div>
                                             </div>
+
+                                            <?php if (isset($form_errors['general'])): ?>
+                                                <div class="alert alert-danger"><?php echo htmlspecialchars($form_errors['general']); ?></div>
+                                            <?php endif; ?>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -280,6 +333,15 @@ if ($result) {
             </div>
         </div>
     </div>
+
+    <?php if (isset($_GET['modal']) && $_GET['modal'] === 'add' && !empty($form_errors)): ?>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var myModal = new bootstrap.Modal(document.getElementById('addProduct'));
+                myModal.show();
+            });
+        </script>
+    <?php endif; ?>
 
     <?php include('../components/toast.php'); ?>
     <?php include('../components/script.php'); ?>
