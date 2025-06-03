@@ -3,6 +3,10 @@ include('../conn.php');
 session_start();
 include('../actions/check_user.php');
 
+$form_errors = $_SESSION['form_errors'] ?? [];
+$old = $_SESSION['old'] ?? [];
+unset($_SESSION['form_errors'], $_SESSION['old']);
+
 $limit = 10;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $page = max($page, 1);
@@ -92,59 +96,101 @@ if ($petResult) {
                         <div class="modal fade" id="addOwner" tabindex="-1" aria-labelledby="addOwnerLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
-                                    <form method="POST" action="../actions/add_owner.php">
+                                    <form method="POST" action="../actions/add_owner.php" novalidate>
                                         <div class="modal-header">
                                             <h1 class="modal-title fs-5 fw-bold" id="addNewStaffLabel">Add new owner</h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
+
                                             <div class="mb-3">
                                                 <label for="first_name" class="form-label">First name</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
-                                                    <input type="text" class="form-control" placeholder="Enter your first name" name="first_name" id="first_name" required>
+                                                <input
+                                                    type="text"
+                                                    class="form-control <?php echo isset($form_errors['first_name']) ? 'is-invalid' : ''; ?>"
+                                                    placeholder="Enter your first name"
+                                                    name="first_name"
+                                                    id="first_name"
+                                                    value="<?php echo isset($old['first_name']) ? htmlspecialchars($old['first_name']) : ''; ?>">
+                                                <div class="invalid-feedback">
+                                                    <?php echo $form_errors['first_name'] ?? ''; ?>
                                                 </div>
                                             </div>
 
                                             <div class="mb-3">
                                                 <label for="middle_name" class="form-label">Middle name</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
-                                                    <input type="text" class="form-control" placeholder="Enter your middle name (Optional)" name="middle_name" id="middle_name">
+                                                <input
+                                                    type="text"
+                                                    class="form-control <?php echo isset($form_errors['middle_name']) ? 'is-invalid' : ''; ?>"
+                                                    placeholder="Enter your middle name (Optional)"
+                                                    name="middle_name"
+                                                    id="middle_name"
+                                                    value="<?php echo isset($old['middle_name']) ? htmlspecialchars($old['middle_name']) : ''; ?>">
+                                                <div class="invalid-feedback">
+                                                    <?php echo $form_errors['middle_name'] ?? ''; ?>
                                                 </div>
                                             </div>
 
                                             <div class="mb-3">
                                                 <label for="last_name" class="form-label">Last name</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
-                                                    <input type="text" class="form-control" placeholder="Enter your last name" name="last_name" id="last_name">
+                                                <input
+                                                    type="text"
+                                                    class="form-control <?php echo isset($form_errors['last_name']) ? 'is-invalid' : ''; ?>"
+                                                    placeholder="Enter your last name"
+                                                    name="last_name"
+                                                    id="last_name"
+                                                    value="<?php echo isset($old['last_name']) ? htmlspecialchars($old['last_name']) : ''; ?>">
+                                                <div class="invalid-feedback">
+                                                    <?php echo $form_errors['last_name'] ?? ''; ?>
                                                 </div>
                                             </div>
 
                                             <div class="mb-3">
                                                 <label for="address" class="form-label">Address</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fa-solid fa-location-dot"></i></span>
-                                                    <input type="text" class="form-control" placeholder="Enter your address" name="address" id="address" required>
+                                                <input
+                                                    type="text"
+                                                    class="form-control <?php echo isset($form_errors['address']) ? 'is-invalid' : ''; ?>"
+                                                    placeholder="Enter your address"
+                                                    name="address"
+                                                    id="address"
+                                                    value="<?php echo isset($old['address']) ? htmlspecialchars($old['address']) : ''; ?>">
+                                                <div class="invalid-feedback">
+                                                    <?php echo $form_errors['address'] ?? ''; ?>
                                                 </div>
                                             </div>
 
                                             <div class="mb-4">
                                                 <label for="mobile_number" class="form-label">Mobile Number</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fa-solid fa-phone"></i></span>
-                                                    <input type="text" class="form-control" placeholder="Enter your mobile number" name="mobile_number" id="mobile_number" required>
+                                                <input
+                                                    type="text"
+                                                    class="form-control <?php echo isset($form_errors['mobile_number']) ? 'is-invalid' : ''; ?>"
+                                                    placeholder="Enter your mobile number"
+                                                    name="mobile_number"
+                                                    id="mobile_number"
+                                                    value="<?php echo isset($old['mobile_number']) ? htmlspecialchars($old['mobile_number']) : ''; ?>">
+                                                <div class="invalid-feedback">
+                                                    <?php echo $form_errors['mobile_number'] ?? ''; ?>
                                                 </div>
                                             </div>
 
                                             <div class="mb-4">
                                                 <label for="messenger_account" class="form-label">Messenger Account</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fa-solid fa-circle-user"></i></span>
-                                                    <input type="text" class="form-control" placeholder="Enter your messenger account (Optional)" name="messenger_account" id="messenger_account">
+                                                <input
+                                                    type="text"
+                                                    class="form-control <?php echo isset($form_errors['messenger_account']) ? 'is-invalid' : ''; ?>"
+                                                    placeholder="Enter your messenger account (Optional)"
+                                                    name="messenger_account"
+                                                    id="messenger_account"
+                                                    value="<?php echo isset($old['messenger_account']) ? htmlspecialchars($old['messenger_account']) : ''; ?>">
+                                                <div class="invalid-feedback">
+                                                    <?php echo $form_errors['messenger_account'] ?? ''; ?>
                                                 </div>
                                             </div>
+
+                                            <?php if (isset($form_errors['general'])): ?>
+                                                <div class="alert alert-danger"><?php echo htmlspecialchars($form_errors['general']); ?></div>
+                                            <?php endif; ?>
+
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -316,6 +362,15 @@ if ($petResult) {
             </div>
         </div>
     </div>
+
+    <?php if (isset($_GET['modal']) && $_GET['modal'] === 'add' && !empty($form_errors)): ?>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var myModal = new bootstrap.Modal(document.getElementById('addOwner'));
+                myModal.show();
+            });
+        </script>
+    <?php endif; ?>
 
     <?php include('../components/toast.php'); ?>
     <?php include('../components/script.php'); ?>
