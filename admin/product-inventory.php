@@ -21,6 +21,29 @@ if ($result) {
         $products[] = $row;
     }
 }
+
+$categoryFilter = isset($_GET['category']) ? mysqli_real_escape_string($conn, $_GET['category']) : '';
+
+$whereClause = "";
+if (!empty($categoryFilter)) {
+    $whereClause = "WHERE category = '$categoryFilter'";
+}
+
+// Update the count query
+$totalUsersResult = mysqli_query($conn, "SELECT COUNT(*) as total FROM products $whereClause");
+$totalUsersRow = mysqli_fetch_assoc($totalUsersResult);
+$totalUsers = $totalUsersRow['total'];
+$totalPages = ceil($totalUsers / $limit);
+
+// Update the main data query
+$query = "SELECT * FROM products $whereClause ORDER BY product_id DESC LIMIT $limit OFFSET $offset";
+$result = mysqli_query($conn, $query);
+$products = [];
+if ($result) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        $products[] = $row;
+    }
+}
 ?>
 
 
@@ -51,12 +74,29 @@ if ($result) {
                 <h3 class="fw-bold mb-3">Product Inventory</h3>
 
                 <div class="d-flex justify-content-lg-between mb-5 gap-3 flex-md-row flex-column">
-                    <div class=" w-auto">
+                    <div class="w-auto d-flex gap-2">
                         <div>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fa-solid fa-boxes-stacked"></i></span>
                                 <input type="text" class="form-control" id="searchInput" placeholder="Search for products...">
                             </div>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2 align-items-center">
+                            <form class="d-flex gap-2" method="GET">
+                                <select name="category" class="form-select w-auto">
+                                    <option value="">All Categories</option>
+                                    <?php
+                                    $categoryResult = mysqli_query($conn, "SELECT DISTINCT category FROM products ORDER BY category ASC");
+                                    while ($cat = mysqli_fetch_assoc($categoryResult)) {
+                                        $selected = (isset($_GET['category']) && $_GET['category'] == $cat['category']) ? 'selected' : '';
+                                        echo "<option value='" . htmlspecialchars($cat['category']) . "' $selected>" . htmlspecialchars($cat['category']) . "</option>";
+                                    }
+                                    ?>
+                                </select>
+                                <button type="submit" class="btn bg-black text-white">
+                                    <i class="fa-solid fa-filter"></i> Filter
+                                </button>
+                            </form>
                         </div>
                     </div>
 

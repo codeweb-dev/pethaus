@@ -4,6 +4,10 @@ session_start();
 include('../actions/check_user.php');
 include('../actions/check_admin_role.php');
 
+$errors = $_SESSION['form_errors'] ?? [];
+$old = $_SESSION['old'] ?? [];
+unset($_SESSION['form_errors'], $_SESSION['old']);
+
 $limit = 10;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $page = max($page, 1);
@@ -81,42 +85,66 @@ if ($result) {
                                         <div class="modal-body">
                                             <div class="mb-3">
                                                 <label for="first_name" class="form-label">First name</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
-                                                    <input type="text" class="form-control" placeholder="Enter your first name" name="first_name" id="first_name" required>
-                                                </div>
+                                                <input type="text"
+                                                    class="form-control <?php echo isset($errors['first_name']) ? 'is-invalid' : ''; ?>"
+                                                    placeholder="Enter your first name"
+                                                    name="first_name"
+                                                    id="first_name"
+                                                    value="<?php echo htmlspecialchars($old['first_name'] ?? ''); ?>">
+                                                <?php if (isset($errors['first_name'])): ?>
+                                                    <div class="invalid-feedback"><?php echo htmlspecialchars($errors['first_name']); ?></div>
+                                                <?php endif; ?>
                                             </div>
 
                                             <div class="mb-3">
                                                 <label for="middle_name" class="form-label">Middle name</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
-                                                    <input type="text" class="form-control" placeholder="Enter your middle name (optional)" name="middle_name" id="middle_name">
-                                                </div>
+                                                <input type="text"
+                                                    class="form-control <?php echo isset($errors['middle_name']) ? 'is-invalid' : ''; ?>"
+                                                    placeholder="Enter your middle name (optional)"
+                                                    name="middle_name"
+                                                    id="middle_name"
+                                                    value="<?php echo htmlspecialchars($old['middle_name'] ?? ''); ?>">
+                                                <?php if (isset($errors['middle_name'])): ?>
+                                                    <div class="invalid-feedback"><?php echo htmlspecialchars($errors['middle_name']); ?></div>
+                                                <?php endif; ?>
                                             </div>
 
                                             <div class="mb-3">
                                                 <label for="last_name" class="form-label">Last name</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
-                                                    <input type="text" class="form-control" placeholder="Enter your last name" name="last_name" id="last_name" required>
-                                                </div>
+                                                <input type="text"
+                                                    class="form-control <?php echo isset($errors['last_name']) ? 'is-invalid' : ''; ?>"
+                                                    placeholder="Enter your last name"
+                                                    name="last_name"
+                                                    id="last_name"
+                                                    value="<?php echo htmlspecialchars($old['last_name'] ?? ''); ?>">
+                                                <?php if (isset($errors['last_name'])): ?>
+                                                    <div class="invalid-feedback"><?php echo htmlspecialchars($errors['last_name']); ?></div>
+                                                <?php endif; ?>
                                             </div>
 
                                             <div class="mb-3">
                                                 <label for="username" class="form-label">Username</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
-                                                    <input type="text" class="form-control" placeholder="Enter your username" name="username" id="username" required>
-                                                </div>
+                                                <input type="text"
+                                                    class="form-control <?php echo isset($errors['username']) ? 'is-invalid' : ''; ?>"
+                                                    placeholder="Enter your username"
+                                                    name="username"
+                                                    id="username"
+                                                    value="<?php echo htmlspecialchars($old['username'] ?? ''); ?>">
+                                                <?php if (isset($errors['username'])): ?>
+                                                    <div class="invalid-feedback"><?php echo htmlspecialchars($errors['username']); ?></div>
+                                                <?php endif; ?>
                                             </div>
 
                                             <div class="mb-4">
                                                 <label for="password" class="form-label">Password</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
-                                                    <input type="password" class="form-control" placeholder="Enter your password" name="password" id="password" required>
-                                                </div>
+                                                <input type="password"
+                                                    class="form-control <?php echo isset($errors['password']) ? 'is-invalid' : ''; ?>"
+                                                    placeholder="Enter your password"
+                                                    name="password"
+                                                    id="password">
+                                                <?php if (isset($errors['password'])): ?>
+                                                    <div class="invalid-feedback"><?php echo htmlspecialchars($errors['password']); ?></div>
+                                                <?php endif; ?>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -127,6 +155,7 @@ if ($result) {
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
 
@@ -176,6 +205,15 @@ if ($result) {
             </div>
         </div>
     </div>
+
+    <?php if (isset($_GET['modal']) && $_GET['modal'] === 'add' && !empty($errors)): ?>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var myModal = new bootstrap.Modal(document.getElementById('addNewStaff'));
+                myModal.show();
+            });
+        </script>
+    <?php endif; ?>
 
     <?php include('../components/toast.php'); ?>
     <?php include('../components/script.php'); ?>
