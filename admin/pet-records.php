@@ -242,22 +242,24 @@ if ($result) {
                                                         <div class="invalid-feedback"><?php echo htmlspecialchars($errors['photo']); ?></div>
                                                     <?php endif; ?>
                                                 </div>
-
-                                                <div id="capture_section" class="mt-2 d-none">
-                                                    <div class="mb-2 d-flex align-items-center justify-content-center gap-3">
-                                                        <button type="button" class="btn bg-black text-white" onclick="startWebcam()">Start Camera</button>
-                                                        <button type="button" class="btn bg-black text-white" onclick="stopWebcam()">Stop Camera</button>
-                                                    </div>
-                                                    <div id="my_camera" class="mt-2"></div>
-                                                    <div id="results" class="mt-2"></div>
-                                                    <input type="hidden" name="captured_image" id="captured_image">
-                                                    <div class="mt-2 d-flex align-items-center justify-content-center">
-                                                        <button type="button" class="btn bg-black text-white" onclick="takeSnapshot()">Capture & Use</button>
-                                                    </div>
-                                                </div>
                                             </div>
-
                                         </div>
+
+                                        <div id="capture_section" class="d-none">
+                                            <div class="d-flex align-items-center justify-content-center gap-3">
+                                                <button type="button" class="btn bg-black text-white" onclick="startWebcam()">Start Camera</button>
+                                                <button type="button" class="btn bg-black text-white" onclick="stopWebcam()">Stop Camera</button>
+                                            </div>
+                                            <div class="d-flex flex-column align-items-center justify-content-center gap-3">
+                                                <div id="my_camera" class="mt-2"></div>
+                                                <div id="results" class="mt-2"></div>
+                                            </div>
+                                            <input type="hidden" name="captured_image" id="captured_image">
+                                            <div class="mt-2 mb-3 d-flex align-items-center justify-content-center">
+                                                <button type="button" class="btn bg-black text-white" onclick="takeSnapshot()">Capture & Use</button>
+                                            </div>
+                                        </div>
+
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                             <button type="submit" class="btn bg-black text-white">Add new pet</button>

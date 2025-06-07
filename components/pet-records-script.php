@@ -73,8 +73,8 @@
 
     function startWebcam() {
         Webcam.set({
-            width: 320,
-            height: 240,
+            width: 680,
+            height: 380,
             image_format: 'jpeg',
             jpeg_quality: 90,
         });
@@ -91,7 +91,8 @@
 
     function takeSnapshot() {
         Webcam.snap(function(data_uri) {
-            document.getElementById('results').innerHTML = '<img src="' + data_uri + '" class="img-fluid"/>';
+            document.getElementById('results').innerHTML =
+                '<img src="' + data_uri + '" class="img-fluid" />';
             document.getElementById('captured_image').value = data_uri;
             Webcam.reset();
         });
