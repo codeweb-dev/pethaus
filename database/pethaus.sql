@@ -40,7 +40,8 @@ CREATE TABLE `products` (
   `price` DECIMAL(10,2) NOT NULL,
   `unit_of_measure` VARCHAR(250) NOT NULL,
   `category` VARCHAR(250) NOT NULL,
-  `quantity` INT NOT NULL DEFAULT 0
+  `quantity` INT NOT NULL DEFAULT 0,
+  `stock` VARCHAR(250) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `dogs` (

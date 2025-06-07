@@ -8,8 +8,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Required fields
     $requiredFields = ['name', 'description', 'price', 'unit_of_measure', 'category', 'quantity'];
     foreach ($requiredFields as $field) {
-        if (empty(trim($_POST[$field] ?? ''))) {
-            $errors[$field] = ucfirst(str_replace('_', ' ', $field)) . " is required.";
+        if ($field === 'quantity') {
+            if (!isset($_POST[$field]) || trim($_POST[$field]) === '') {
+                // This will allow "0" but not an empty string
+                $errors[$field] = ucfirst(str_replace('_', ' ', $field)) . " is required.";
+            }
+        } else {
+            if (empty(trim($_POST[$field] ?? ''))) {
+                $errors[$field] = ucfirst(str_replace('_', ' ', $field)) . " is required.";
+            }
         }
     }
 
@@ -39,12 +46,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $price = (float)$price;
     $quantity = (int)$quantity;
 
-    $stmt = $conn->prepare("INSERT INTO products (name, description, price, unit_of_measure, category, quantity) VALUES (?, ?, ?, ?, ?, ?)");
+    if ($quantity == 0) {
+        $stock = 'Out of Stock';
+    } elseif ($quantity <= 10) {
+        $stock = 'Low Stock';
+    } else {
+        $stock = 'In Stock';
+    }
+
+    $stmt = $conn->prepare("INSERT INTO products (name, description, price, unit_of_measure, category, quantity, stock) VALUES (?, ?, ?, ?, ?, ?, ?)");
+
     if ($stmt === false) {
         die('Prepare failed: ' . htmlspecialchars($conn->error));
     }
 
-    $stmt->bind_param("ssdssi", $name, $description, $price, $unit_of_measure, $category, $quantity);
+    $stmt->bind_param("ssdssis", $name, $description, $price, $unit_of_measure, $category, $quantity, $stock);
 
     if ($stmt->execute()) {
         $stmt->close();

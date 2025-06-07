@@ -27,10 +27,18 @@ if ($result) {
 }
 
 $categoryFilter = isset($_GET['category']) ? mysqli_real_escape_string($conn, $_GET['category']) : '';
+$stockFilter = isset($_GET['stock']) ? mysqli_real_escape_string($conn, $_GET['stock']) : '';
 
-$whereClause = "";
+$whereParts = [];
 if (!empty($categoryFilter)) {
-    $whereClause = "WHERE category = '$categoryFilter'";
+    $whereParts[] = "category = '$categoryFilter'";
+}
+if (!empty($stockFilter)) {
+    $whereParts[] = "stock = '$stockFilter'";
+}
+$whereClause = "";
+if (!empty($whereParts)) {
+    $whereClause = "WHERE " . implode(' AND ', $whereParts);
 }
 
 $totalUsersResult = mysqli_query($conn, "SELECT COUNT(*) as total FROM products $whereClause");
@@ -47,7 +55,6 @@ if ($result) {
     }
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -79,25 +86,38 @@ if ($result) {
                     <div class="w-auto d-flex gap-2">
                         <div>
                             <div class="input-group">
-                                <span class="input-group-text"><i class="fa-solid fa-boxes-stacked"></i></span>
+                                <span class="input-group-text "><i class="fa-solid fa-boxes-stacked"></i></span>
                                 <input type="text" class="form-control" id="searchInput" placeholder="Search for products...">
                             </div>
                         </div>
                         <div class="d-flex flex-wrap gap-2 align-items-center">
                             <form class="d-flex gap-2" method="GET">
-                                <select name="category" class="form-select w-auto">
-                                    <option value="">All Categories</option>
-                                    <?php
-                                    $categoryResult = mysqli_query($conn, "SELECT DISTINCT category FROM products ORDER BY category ASC");
-                                    while ($cat = mysqli_fetch_assoc($categoryResult)) {
-                                        $selected = (isset($_GET['category']) && $_GET['category'] == $cat['category']) ? 'selected' : '';
-                                        echo "<option value='" . htmlspecialchars($cat['category']) . "' $selected>" . htmlspecialchars($cat['category']) . "</option>";
-                                    }
-                                    ?>
+                                <select name="category" class="form-select w-25">
+                                    <option value="" <?php echo empty($categoryFilter) ? 'selected' : ''; ?>>All Categories</option>
+                                    <option value="Veterinary Medicines & Treatments" <?php echo ($categoryFilter == "Veterinary Medicines & Treatments") ? 'selected' : ''; ?>>Veterinary Medicines & Treatments</option>
+                                    <option value="Pet Food & Treats" <?php echo ($categoryFilter == "Pet Food & Treats") ? 'selected' : ''; ?>>Pet Food & Treats</option>
+                                    <option value="Pet Accessories" <?php echo ($categoryFilter == "Pet Accessories") ? 'selected' : ''; ?>>Pet Accessories</option>
+                                    <option value="Pet Housing & Bedding" <?php echo ($categoryFilter == "Pet Housing & Bedding") ? 'selected' : ''; ?>>Pet Housing & Bedding</option>
+                                    <option value="Grooming Supplies" <?php echo ($categoryFilter == "Grooming Supplies") ? 'selected' : ''; ?>>Grooming Supplies</option>
+                                    <option value="Cleaning & Sanitation" <?php echo ($categoryFilter == "Cleaning & Sanitation") ? 'selected' : ''; ?>>Cleaning & Sanitation</option>
+                                    <option value="Pet Toys & Enrichment" <?php echo ($categoryFilter == "Pet Toys & Enrichment") ? 'selected' : ''; ?>>Pet Toys & Enrichment</option>
                                 </select>
+
+                                <select name="stock" class="form-select w-25">
+                                    <option value="" <?php echo empty($_GET['stock']) ? 'selected' : ''; ?>>All Stock Status</option>
+                                    <option value="In Stock" <?php echo (isset($_GET['stock']) && $_GET['stock'] == "In Stock") ? 'selected' : ''; ?>>In Stock</option>
+                                    <option value="Low Stock" <?php echo (isset($_GET['stock']) && $_GET['stock'] == "Low Stock") ? 'selected' : ''; ?>>Low Stock</option>
+                                    <option value="Out of Stock" <?php echo (isset($_GET['stock']) && $_GET['stock'] == "Out of Stock") ? 'selected' : ''; ?>>Out of Stock</option>
+                                </select>
+
                                 <button type="submit" class="btn bg-black text-white">
                                     <i class="fa-solid fa-filter"></i> Filter
                                 </button>
+                                <?php if (!empty($_GET['category']) || !empty($_GET['stock'])): ?>
+                                    <a href="product-inventory.php" class="btn bg-black text-white">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </a>
+                                <?php endif; ?>
                             </form>
                         </div>
                     </div>
@@ -184,14 +204,21 @@ if ($result) {
 
                                             <div class="mb-3">
                                                 <label for="category" class="form-label">Category</label>
-                                                <input
-                                                    type="text"
+                                                <select
                                                     class="form-control <?php echo isset($form_errors['category']) ? 'is-invalid' : ''; ?>"
-                                                    placeholder="Enter product category"
                                                     name="category"
                                                     id="category"
-                                                    value="<?php echo htmlspecialchars($old['category'] ?? ''); ?>"
                                                     required>
+                                                    <option value="" disabled <?php echo empty($old['category']) ? 'selected' : ''; ?>>Select product category</option>
+                                                    <option value="Veterinary Medicines & Treatments" <?php echo (isset($old['category']) && $old['category'] == 'Veterinary Medicines & Treatments') ? 'selected' : ''; ?>>Veterinary Medicines & Treatments</option>
+                                                    <option value="Pet Food & Treats" <?php echo (isset($old['category']) && $old['category'] == 'Pet Food & Treats') ? 'selected' : ''; ?>>Pet Food & Treats</option>
+                                                    <option value="Pet Accessories" <?php echo (isset($old['category']) && $old['category'] == 'Pet Accessories') ? 'selected' : ''; ?>>Pet Accessories</option>
+                                                    <option value="Pet Housing & Bedding" <?php echo (isset($old['category']) && $old['category'] == 'Pet Housing & Bedding') ? 'selected' : ''; ?>>Pet Housing & Bedding</option>
+                                                    <option value="Grooming Supplies" <?php echo (isset($old['category']) && $old['category'] == 'Grooming Supplies') ? 'selected' : ''; ?>>Grooming Supplies</option>
+                                                    <option value="Cleaning & Sanitation" <?php echo (isset($old['category']) && $old['category'] == 'Cleaning & Sanitation') ? 'selected' : ''; ?>>Cleaning & Sanitation</option>
+                                                    <option value="Pet Toys & Enrichment" <?php echo (isset($old['category']) && $old['category'] == 'Pet Toys & Enrichment') ? 'selected' : ''; ?>>Pet Toys & Enrichment</option>
+                                                </select>
+
                                                 <div class="invalid-feedback">
                                                     <?php echo $form_errors['category'] ?? ''; ?>
                                                 </div>
@@ -205,6 +232,7 @@ if ($result) {
                                                     placeholder="Enter product quantity"
                                                     name="quantity"
                                                     id="quantity"
+                                                    min="0"
                                                     value="<?php echo htmlspecialchars($old['quantity'] ?? ''); ?>"
                                                     required>
                                                 <div class="invalid-feedback">
@@ -238,6 +266,7 @@ if ($result) {
                                 <th class="p-3" scope="col">Unit of measure</th>
                                 <th class="p-3" scope="col">Category</th>
                                 <th class="p-3" scope="col">Quantity</th>
+                                <th class="p-3" scope="col">Stock</th>
                                 <th class="p-3" scope="col">Action</th>
                             </tr>
                         </thead>
@@ -251,6 +280,7 @@ if ($result) {
                                     <td class="p-3"><?php echo $product['unit_of_measure']; ?></td>
                                     <td class="p-3"><?php echo $product['category']; ?></td>
                                     <td class="p-3"><?php echo $product['quantity']; ?></td>
+                                    <td class="p-3"><?php echo $product['stock']; ?></td>
                                     <td class="p-3">
                                         <i class="fa-solid fa-pen-to-square" title="edit pet" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#editProductModal<?php echo $product['product_id']; ?>"></i>
 
@@ -287,7 +317,15 @@ if ($result) {
 
                                                             <div class="mb-3">
                                                                 <label for="category" class="form-label">Category</label>
-                                                                <input type="text" class="form-control" name="category" value="<?php echo htmlspecialchars($product['category']); ?>" required>
+                                                                <select class="form-control" name="category" required>
+                                                                    <option value="Veterinary Medicines & Treatments" <?php echo ($product['category'] == 'Veterinary Medicines & Treatments') ? 'selected' : ''; ?>>Veterinary Medicines & Treatments</option>
+                                                                    <option value="Pet Food & Treats" <?php echo ($product['category'] == 'Pet Food & Treats') ? 'selected' : ''; ?>>Pet Food & Treats</option>
+                                                                    <option value="Pet Accessories" <?php echo ($product['category'] == 'Pet Accessories') ? 'selected' : ''; ?>>Pet Accessories</option>
+                                                                    <option value="Pet Housing & Bedding" <?php echo ($product['category'] == 'Pet Housing & Bedding') ? 'selected' : ''; ?>>Pet Housing & Bedding</option>
+                                                                    <option value="Grooming Supplies" <?php echo ($product['category'] == 'Grooming Supplies') ? 'selected' : ''; ?>>Grooming Supplies</option>
+                                                                    <option value="Cleaning & Sanitation" <?php echo ($product['category'] == 'Cleaning & Sanitation') ? 'selected' : ''; ?>>Cleaning & Sanitation</option>
+                                                                    <option value="Pet Toys & Enrichment" <?php echo ($product['category'] == 'Pet Toys & Enrichment') ? 'selected' : ''; ?>>Pet Toys & Enrichment</option>
+                                                                </select>
                                                             </div>
 
                                                             <div class="mb-3">

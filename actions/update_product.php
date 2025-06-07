@@ -10,8 +10,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $category = trim($_POST['category']);
     $quantity = intval($_POST['quantity']);
 
-    $stmt = $conn->prepare("UPDATE products SET name=?, description=?, price=?, unit_of_measure=?, category=?, quantity=? WHERE product_id=?");
-    $stmt->bind_param("ssdssii", $name, $description, $price, $unit_of_measure, $category, $quantity, $product_id);
+    if ($quantity == 0) {
+        $stock = 'Out of Stock';
+    } elseif ($quantity <= 10) {
+        $stock = 'Low Stock';
+    } else {
+        $stock = 'In Stock';
+    }
+
+    $stmt = $conn->prepare("UPDATE products SET name=?, description=?, price=?, unit_of_measure=?, category=?, quantity=?, stock=? WHERE product_id=?");
+    $stmt->bind_param("ssdssisi", $name, $description, $price, $unit_of_measure, $category, $quantity, $stock, $product_id);
 
     if ($stmt->execute()) {
         $stmt->close();
