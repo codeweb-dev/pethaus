@@ -33,13 +33,11 @@ if (!empty($categoryFilter)) {
     $whereClause = "WHERE category = '$categoryFilter'";
 }
 
-// Update the count query
 $totalUsersResult = mysqli_query($conn, "SELECT COUNT(*) as total FROM products $whereClause");
 $totalUsersRow = mysqli_fetch_assoc($totalUsersResult);
 $totalUsers = $totalUsersRow['total'];
 $totalPages = ceil($totalUsers / $limit);
 
-// Update the main data query
 $query = "SELECT * FROM products $whereClause ORDER BY product_id DESC LIMIT $limit OFFSET $offset";
 $result = mysqli_query($conn, $query);
 $products = [];

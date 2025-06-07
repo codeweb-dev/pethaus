@@ -45,13 +45,10 @@ if ($result) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="../assets/style.css">
-
-    <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
-    <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
     <title>Pet Record</title>
 </head>
 
@@ -229,12 +226,37 @@ if ($result) {
                                             </div>
 
                                             <div class="mb-3 col-md-6">
-                                                <label for="photo" class="form-label">Upload Photo</label>
-                                                <input type="file" class="form-control <?php echo isset($errors['photo']) ? 'is-invalid' : ''; ?>" name="photo" id="photo" accept="image/*" value="<?php echo htmlspecialchars($old['photo'] ?? ''); ?>">
-                                                <?php if (isset($errors['photo'])): ?>
-                                                    <div class="invalid-feedback"><?php echo htmlspecialchars($errors['photo']); ?></div>
-                                                <?php endif; ?>
+                                                <label class="form-label">Photo Option</label>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="photo_option" id="option_upload" value="upload" checked>
+                                                    <label class="form-check-label" for="option_upload">Upload Photo</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="photo_option" id="option_capture" value="capture">
+                                                    <label class="form-check-label" for="option_capture">Take Photo</label>
+                                                </div>
+
+                                                <div id="upload_section" class="mt-2">
+                                                    <input type="file" class="form-control <?php echo isset($errors['photo']) ? 'is-invalid' : ''; ?>" name="photo" id="photo" accept="image/*">
+                                                    <?php if (isset($errors['photo'])): ?>
+                                                        <div class="invalid-feedback"><?php echo htmlspecialchars($errors['photo']); ?></div>
+                                                    <?php endif; ?>
+                                                </div>
+
+                                                <div id="capture_section" class="mt-2 d-none">
+                                                    <div class="mb-2 d-flex align-items-center justify-content-center gap-3">
+                                                        <button type="button" class="btn bg-black text-white" onclick="startWebcam()">Start Camera</button>
+                                                        <button type="button" class="btn bg-black text-white" onclick="stopWebcam()">Stop Camera</button>
+                                                    </div>
+                                                    <div id="my_camera" class="mt-2"></div>
+                                                    <div id="results" class="mt-2"></div>
+                                                    <input type="hidden" name="captured_image" id="captured_image">
+                                                    <div class="mt-2 d-flex align-items-center justify-content-center">
+                                                        <button type="button" class="btn bg-black text-white" onclick="takeSnapshot()">Capture & Use</button>
+                                                    </div>
+                                                </div>
                                             </div>
+
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

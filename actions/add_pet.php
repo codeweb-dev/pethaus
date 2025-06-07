@@ -27,7 +27,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['other_species'] = "Please specify the species.";
     }
 
-    if (!isset($_FILES['photo']) || $_FILES['photo']['error'] !== UPLOAD_ERR_OK) {
+    // Check if either captured_image or uploaded file is provided
+    if (
+        (empty($_POST['captured_image']) || !preg_match('/^data:image\/(png|jpeg|jpg);base64,/', $_POST['captured_image']))
+        && (!isset($_FILES['photo']) || $_FILES['photo']['error'] !== UPLOAD_ERR_OK)
+    ) {
         $errors['photo'] = "Photo is required.";
     }
 
@@ -53,18 +57,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         mkdir($upload_dir, 0777, true);
     }
 
-    $filename = basename($_FILES['photo']['name']);
-    $target_file = $upload_dir . time() . '_' . $filename;
+    // Handle captured image
+    if (!empty($_POST['captured_image']) && preg_match('/^data:image\/(png|jpeg|jpg);base64,/', $_POST['captured_image'])) {
+        $data_uri = $_POST['captured_image'];
+        $encoded_image = explode(",", $data_uri)[1];
+        $decoded_image = base64_decode($encoded_image);
 
-    if (move_uploaded_file($_FILES['photo']['tmp_name'], $target_file)) {
-        $image_path = $target_file;
+        $image_name = 'captured_' . time() . '.jpg';
+        $target_file = $upload_dir . $image_name;
+
+        if (file_put_contents($target_file, $decoded_image)) {
+            $image_path = $target_file;
+        } else {
+            $_SESSION['form_errors'] = ['photo' => 'Failed to save captured photo.'];
+            $_SESSION['old'] = $_POST;
+            header("Location: ../admin/pet-records.php?modal=add");
+            exit();
+        }
     } else {
-        $_SESSION['form_errors'] = ['photo' => 'Failed to upload photo.'];
-        $_SESSION['old'] = $_POST;
-        header("Location: ../admin/pet-records.php?modal=add");
-        exit();
+        // Fallback to uploaded file
+        $filename = basename($_FILES['photo']['name']);
+        $target_file = $upload_dir . time() . '_' . $filename;
+
+        if (move_uploaded_file($_FILES['photo']['tmp_name'], $target_file)) {
+            $image_path = $target_file;
+        } else {
+            $_SESSION['form_errors'] = ['photo' => 'Failed to upload photo.'];
+            $_SESSION['old'] = $_POST;
+            header("Location: ../admin/pet-records.php?modal=add");
+            exit();
+        }
     }
 
+    // Insert breed if needed
     if ($species === 'Dog' || $species === 'Cat') {
         $breedTable = $species === 'Dog' ? 'dogs' : 'cats';
         $checkQuery = "SELECT COUNT(*) FROM $breedTable WHERE name = ?";
@@ -84,6 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    // Insert pet record
     $stmt = $conn->prepare("INSERT INTO pet_records (owner_id, name, species, breed, color, sex, birthdate, photo, age, markings) 
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
     if ($stmt === false) {

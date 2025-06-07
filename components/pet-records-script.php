@@ -30,17 +30,14 @@
             select.id = 'breed';
             select.className = 'form-select';
 
-            // Create default option
             const defaultOption = document.createElement('option');
             defaultOption.value = '';
             defaultOption.textContent = 'Select breed';
             select.appendChild(defaultOption);
 
-            // Append label and select to the container
             breedContainer.appendChild(label);
             breedContainer.appendChild(select);
 
-            // Fetch and populate breeds
             fetch(`../actions/get_breeds.php?species=${selectedSpecies}`)
                 .then(response => response.json())
                 .then(breeds => {
@@ -51,7 +48,6 @@
                         select.appendChild(option);
                     });
 
-                    // Initialize Select2 on this select after populating
                     $(select).select2({
                         placeholder: "Select breed",
                         tags: true,
@@ -75,10 +71,53 @@
         }
     });
 
+    function startWebcam() {
+        Webcam.set({
+            width: 320,
+            height: 240,
+            image_format: 'jpeg',
+            jpeg_quality: 90,
+        });
+        Webcam.attach('#my_camera');
+        document.getElementById('my_camera').style.display = 'block';
+    }
+
+    function stopWebcam() {
+        Webcam.reset();
+        document.getElementById('results').innerHTML = '';
+        document.getElementById('captured_image').value = '';
+        document.getElementById('my_camera').style.display = 'none';
+    }
+
+    function takeSnapshot() {
+        Webcam.snap(function(data_uri) {
+            document.getElementById('results').innerHTML = '<img src="' + data_uri + '" class="img-fluid"/>';
+            document.getElementById('captured_image').value = data_uri;
+            Webcam.reset();
+        });
+        document.getElementById('my_camera').style.display = 'none';
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const currentSpecies = speciesSelect.value;
+        const uploadSection = document.getElementById('upload_section');
+        const captureSection = document.getElementById('capture_section');
+        const radioButtons = document.querySelectorAll('input[name="photo_option"]');
+
         if (currentSpecies) {
             speciesSelect.dispatchEvent(new Event('change'));
         }
+
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'upload') {
+                    uploadSection.classList.remove('d-none');
+                    captureSection.classList.add('d-none');
+                } else if (this.value === 'capture') {
+                    captureSection.classList.remove('d-none');
+                    uploadSection.classList.add('d-none');
+                }
+            });
+        });
     });
 </script>
