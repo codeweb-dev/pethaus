@@ -44,6 +44,52 @@ CREATE TABLE `products` (
   `stock` VARCHAR(250) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- Medical Records Table (already linked to pet and user)
+CREATE TABLE `medical_records` (
+  `medical_record_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `pet_id` INT NULL,
+  `owner_id` INT NULL, -- attending vet or staff
+  `type` VARCHAR(255) NOT NULL,
+  `date_started` DATE NOT NULL,
+  `date_ended` DATE NOT NULL,
+  `description` VARCHAR(255) NOT NULL,
+  `weight` VARCHAR(255) NOT NULL,
+  `temperature` VARCHAR(255) NOT NULL,
+  `complaint` VARCHAR(255) NOT NULL,
+
+  `treatment_date` DATE,
+  `treatment_name` VARCHAR(255),
+  `treatment_test` VARCHAR(255),
+  `treatment_remarks` VARCHAR(255),
+  `treatment_charge` DECIMAL(10,2),
+
+  `prescription_date` DATE,
+  `prescription_name` VARCHAR(255),
+  `prescription_description` VARCHAR(255),
+  `prescription_remarks` VARCHAR(255),
+  `prescription_charge` DECIMAL(10,2),
+
+  `others_date` DATE,
+  `others_name` VARCHAR(255),
+  `others_quantity` VARCHAR(255),
+  `others_remarks` VARCHAR(255),
+  `others_charge` DECIMAL(10,2),
+
+  FOREIGN KEY (`pet_id`) REFERENCES `pet_records`(`pet_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`owner_id`) REFERENCES `pet_owner_records`(`owner_id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `medical_bill` (
+  `bill_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `medical_record_id` INT NULL,
+  `owner_id` INT NULL,
+  `total_amount` DECIMAL(10,2) NOT NULL,
+  `status` VARCHAR(100) NOT NULL, 
+  `billing_date` DATE NOT NULL,
+  FOREIGN KEY (`medical_record_id`) REFERENCES `medical_records`(`medical_record_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`owner_id`) REFERENCES `pet_owner_records`(`owner_id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 CREATE TABLE `dogs` (
   `dog_id` INT AUTO_INCREMENT PRIMARY KEY,
   `name` VARCHAR(255) NOT NULL

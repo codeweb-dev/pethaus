@@ -1,0 +1,261 @@
+<?php session_start(); ?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="../assets/images/pethaus_logo.png" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="../assets/style.css">
+    <title>Medical Records</title>
+</head>
+
+<body>
+    <?php include('../components/navbar.php'); ?>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 text-white min-vh-100 p-0">
+                <?php include('../components/sidebar.php'); ?>
+            </div>
+
+            <div class="col-md-10 bg-light min-vh-100 py-4 px-3">
+                <h3 class="fw-bold mb-3">Medical Records</h3>
+
+                <div class="d-flex justify-content-between mb-5">
+                    <div class="w-auto">
+                        <div>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-box"></i></span>
+                                <input type="text" class="form-control" id="searchInput" placeholder="Search medical records...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button class="btn bg-black text-white">Refresh</button>
+                        <button class="btn bg-black text-white" data-bs-toggle="modal" data-bs-target="#medicalRecordWizard">Add new record</button>
+                    </div>
+
+                    <div class="modal fade" id="medicalRecordWizard" tabindex="-1" aria-labelledby="wizardLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <form id="medicalRecordForm">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title fw-bold" id="wizardLabel">Create Medical Record</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <!-- Step container -->
+                                        <div id="wizardSteps">
+
+                                            <!-- Step 1: Owner and Pet -->
+                                            <div class="wizard-step" data-step="1">
+                                                <h5 class="mb-3">Step 1: Select Owner and Pet</h5>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Owner</label>
+                                                    <select name="owner_id" class="form-select" required>
+                                                        <option value="">-- Select Owner --</option>
+                                                        <!-- PHP: populate from DB -->
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Pet</label>
+                                                    <select name="pet_id" class="form-select" required>
+                                                        <option value="">-- Select Pet --</option>
+                                                        <!-- PHP: populate from DB -->
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <!-- Step 2: Medical Record -->
+                                            <div class="wizard-step d-none" data-step="2">
+                                                <h5 class="mb-3">Step 2: Medical Record</h5>
+                                                <div class="row g-3">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Type</label>
+                                                        <input type="text" class="form-control" name="type" required>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Start Date</label>
+                                                        <input type="date" class="form-control" name="date_started" required>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">End Date</label>
+                                                        <input type="date" class="form-control" name="date_ended" required>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Weight</label>
+                                                        <input type="text" class="form-control" name="weight">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Temperature (°C)</label>
+                                                        <input type="text" class="form-control" name="temperature">
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <label class="form-label">Complaint</label>
+                                                        <textarea class="form-control" name="complaint" rows="2"></textarea>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <label class="form-label">Description</label>
+                                                        <textarea class="form-control" name="description" rows="2"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Step 3: Treatments -->
+                                            <div class="wizard-step d-none" data-step="3">
+                                                <h5 class="mb-3">Step 3: Treatments</h5>
+                                                <div id="treatmentContainer"></div>
+                                                <button type="button" class="btn btn-secondary mt-2" onclick="addTreatment()">+ Add Treatment</button>
+                                            </div>
+
+                                            <!-- Step 4: Prescriptions -->
+                                            <div class="wizard-step d-none" data-step="4">
+                                                <h5 class="mb-3">Step 4: Prescriptions</h5>
+                                                <div id="prescriptionContainer"></div>
+                                                <button type="button" class="btn btn-secondary mt-2" onclick="addPrescription()">+ Add Prescription</button>
+                                            </div>
+
+                                            <!-- Step 5: Others -->
+                                            <div class="wizard-step d-none" data-step="5">
+                                                <h5 class="mb-3">Step 5: Others</h5>
+                                                <div id="othersContainer"></div>
+                                                <button type="button" class="btn btn-secondary mt-2" onclick="addOther()">+ Add Item</button>
+
+                                                <div class="form-check mt-4">
+                                                    <input class="form-check-input" type="checkbox" value="1" id="createBill" name="create_bill">
+                                                    <label class="form-check-label" for="createBill">Create Bill</label>
+                                                </div>
+
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="1" id="printBill" name="print_bill">
+                                                    <label class="form-check-label" for="printBill">Print Bill</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Wizard Navigation -->
+                                    <div class="modal-footer d-flex justify-content-between">
+                                        <button type="button" class="btn btn-secondary" id="prevBtn" disabled>Back</button>
+                                        <button type="button" class="btn btn-primary" id="nextBtn">Next</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">TYPE</th>
+                                <th scope="col">START DATE</th>
+                                <th scope="col">END DATE</th>
+                                <th scope="col">DESCRIPTION</th>
+                                <th scope="col">WEIGHT</th>
+                                <th scope="col">TEMPERATURE</th>
+                                <th scope="col">PET</th>
+                                <th scope="col">OWNER</th>
+                                <th scope="col">ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>1</th>
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                                <td>@mdo</td>
+                                <td>@mdo</td>
+                                <td>@mdo</td>
+                                <td>@mdo</td>
+                                <td>@mdo</td>
+                                <td>View Bill, View Medical, Edit</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            if (currentStep < 5) {
+                document.querySelector(`[data-step="${currentStep}"]`).classList.add('d-none');
+                currentStep++;
+                document.querySelector(`[data-step="${currentStep}"]`).classList.remove('d-none');
+                document.getElementById('prevBtn').disabled = false;
+                if (currentStep === 5) {
+                    document.getElementById('nextBtn').textContent = 'Submit';
+                }
+            } else {
+                // Submit the form here
+                document.getElementById('medicalRecordForm').submit();
+            }
+        });
+
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            if (currentStep > 1) {
+                document.querySelector(`[data-step="${currentStep}"]`).classList.add('d-none');
+                currentStep--;
+                document.querySelector(`[data-step="${currentStep}"]`).classList.remove('d-none');
+                document.getElementById('nextBtn').textContent = 'Next';
+            }
+            if (currentStep === 1) {
+                document.getElementById('prevBtn').disabled = true;
+            }
+        });
+
+        function addTreatment() {
+            const container = document.getElementById('treatmentContainer');
+            container.insertAdjacentHTML('beforeend', `
+    <div class="row g-2 mb-2">
+      <div class="col-md-3"><input type="date" name="treatment_date[]" class="form-control" placeholder="Date"></div>
+      <div class="col-md-3"><input type="text" name="treatment_name[]" class="form-control" placeholder="Name"></div>
+      <div class="col-md-3"><input type="text" name="treatment_test[]" class="form-control" placeholder="Test"></div>
+      <div class="col-md-2"><input type="text" name="treatment_remarks[]" class="form-control" placeholder="Remarks"></div>
+      <div class="col-md-1"><input type="number" name="treatment_charge[]" class="form-control" placeholder="₱"></div>
+    </div>`);
+        }
+
+        function addPrescription() {
+            const container = document.getElementById('prescriptionContainer');
+            container.insertAdjacentHTML('beforeend', `
+    <div class="row g-2 mb-2">
+      <div class="col-md-3"><input type="date" name="prescription_date[]" class="form-control"></div>
+      <div class="col-md-3"><input type="text" name="prescription_name[]" class="form-control" placeholder="Name"></div>
+      <div class="col-md-3"><input type="text" name="prescription_description[]" class="form-control" placeholder="Description"></div>
+      <div class="col-md-2"><input type="text" name="prescription_remarks[]" class="form-control" placeholder="Remarks"></div>
+      <div class="col-md-1"><input type="number" name="prescription_charge[]" class="form-control" placeholder="₱"></div>
+    </div>`);
+        }
+
+        function addOther() {
+            const container = document.getElementById('othersContainer');
+            container.insertAdjacentHTML('beforeend', `
+    <div class="row g-2 mb-2">
+      <div class="col-md-3"><input type="date" name="others_date[]" class="form-control"></div>
+      <div class="col-md-3"><input type="text" name="others_name[]" class="form-control" placeholder="Name"></div>
+      <div class="col-md-2"><input type="text" name="others_quantity[]" class="form-control" placeholder="Qty"></div>
+      <div class="col-md-2"><input type="text" name="others_remarks[]" class="form-control" placeholder="Remarks"></div>
+      <div class="col-md-2"><input type="number" name="others_charge[]" class="form-control" placeholder="₱"></div>
+    </div>`);
+        }
+    </script>
+
+    <?php include('../components/script.php'); ?>
+</body>
+
+</html>

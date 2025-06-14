@@ -22,15 +22,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
     </li>
     <li class="<?= $current_page === 'medical-records.php' ? 'active' : '' ?>">
         <a href="medical-records.php">
-            <!-- <i class="fa-solid fa-file-medical"></i> -->
-            <i class="fa-solid fa-x"></i>
+            <i class="fa-solid fa-file-medical"></i>
             Medical Records
         </a>
     </li>
     <li class="<?= $current_page === 'medical-bills.php' ? 'active' : '' ?>">
         <a href="medical-bills.php">
-            <!-- <i class="fa-solid fa-file-invoice-dollar"></i>  -->
-            <i class="fa-solid fa-x"></i>
+            <i class="fa-solid fa-file-invoice-dollar"></i> 
             Medical Bills
         </a>
     </li>

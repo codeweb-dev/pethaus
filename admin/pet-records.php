@@ -65,7 +65,7 @@ if ($result) {
                 <h3 class="fw-bold mb-3">Pet Record</h3>
 
                 <div class="d-flex justify-content-lg-between mb-5 gap-3 flex-md-row flex-column">
-                    <div class=" w-auto">
+                    <div class="w-auto">
                         <div>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fa-solid fa-box"></i></span>
