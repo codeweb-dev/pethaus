@@ -1,4 +1,15 @@
-<?php session_start(); ?>
+<?php
+session_start();
+include('../conn.php');
+
+// Count total pets
+$petResult = $conn->query("SELECT COUNT(*) AS total_pets FROM pet_records");
+$totalPets = ($petResult && $petResult->num_rows > 0) ? $petResult->fetch_assoc()['total_pets'] : 0;
+
+// Count total pet owners
+$ownerResult = $conn->query("SELECT COUNT(*) AS total_owners FROM pet_owner_records");
+$totalOwners = ($ownerResult && $ownerResult->num_rows > 0) ? $ownerResult->fetch_assoc()['total_owners'] : 0;
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -32,7 +43,7 @@
             <div class="card text-white bg-black text-white">
               <div class="card-body">
                 <p class="mb-2">Total Pets Registered</p>
-                <h4 class="mb-0">0</h4>
+                <h4 class="mb-0"><?php echo $totalPets; ?></h4>
               </div>
             </div>
           </div>
@@ -40,7 +51,7 @@
             <div class="card text-white bg-black text-white">
               <div class="card-body">
                 <p class="mb-2">Total Pet Owners</p>
-                <h4 class="mb-0">0</h4>
+                <h4 class="mb-0"><?php echo $totalOwners; ?></h4>
               </div>
             </div>
           </div>
