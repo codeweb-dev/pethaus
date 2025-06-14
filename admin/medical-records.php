@@ -50,7 +50,7 @@ if ($result) {
                     <div class="w-auto">
                         <div>
                             <div class="input-group">
-                                <span class="input-group-text"><i class="fa-solid fa-box"></i></span>
+                                <span class="input-group-text"><i class="fa-solid fa-file-medical"></i></span>
                                 <input type="text" class="form-control" id="searchInput" placeholder="Search medical records...">
                             </div>
                         </div>

@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $stmt2 = $conn->prepare("
                 INSERT INTO medical_bill (medical_record_id, owner_id, total_amount, status, billing_date)
-                VALUES (?, ?, ?, 'PENDING', NOW())
+                VALUES (?, ?, ?, 'Pending', NOW())
             ");
         $stmt2->bind_param("iid", $medical_id, $owner_id, $total);
         $stmt2->execute();

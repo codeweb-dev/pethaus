@@ -90,6 +90,14 @@ CREATE TABLE `medical_bill` (
   FOREIGN KEY (`owner_id`) REFERENCES `pet_owner_records`(`owner_id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+CREATE TABLE payment_history (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  medical_record_id INT NOT NULL,
+  payment_amount DECIMAL(10, 2) NOT NULL,
+  payment_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (medical_record_id) REFERENCES medical_records(medical_record_id)
+);
+
 CREATE TABLE `dogs` (
   `dog_id` INT AUTO_INCREMENT PRIMARY KEY,
   `name` VARCHAR(255) NOT NULL
