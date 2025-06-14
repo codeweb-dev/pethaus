@@ -15,7 +15,7 @@ $query = "
         mb.billing_date,
         mb.status
     FROM medical_records mr
-    LEFT JOIN medical_bill mb ON mr.medical_record_id = mb.medical_record_id
+    INNER JOIN medical_bill mb ON mr.medical_record_id = mb.medical_record_id
     ORDER BY mr.medical_record_id DESC
 ";
 
@@ -29,7 +29,7 @@ if ($result) {
         $total = $treat + $presc + $other;
 
         $row['calculated_total'] = $total;
-        $row['balance'] = $total - floatval($row['bill_total']); // fallback if partial payment logic added later
+        $row['balance'] = $total - floatval($row['bill_total']);
         $bills[] = $row;
     }
 }
@@ -132,7 +132,7 @@ if ($result) {
                                                 data-bs-target="#paymentHistoryModal">
                                             </i>
 
-                                            <a href="../actions/view_bill.php?record_id=<?php echo $rec['medical_record_id']; ?>" class="text-black"><i class="fa-solid fa-file-medical"></i></a>
+                                            <a href="../actions/view_bill.php?record_id=<?php echo $bill['medical_record_id']; ?>" class="text-black"><i class="fa-solid fa-file-medical"></i></a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

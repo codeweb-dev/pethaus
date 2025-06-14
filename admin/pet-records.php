@@ -345,8 +345,14 @@ if ($result) {
                                                 </div>
                                             </div>
                                         </div>
-                                        <!-- <i class="fa-solid fa-notes-medical"></i> -->
-                                        <i class="fa-solid fa-x"></i>
+                                        <i class="fa-solid fa-file-invoice-dollar text-black view-medical-records"
+                                            style="cursor: pointer;"
+                                            data-id="<?php echo $pet['pet_id']; ?>"
+                                            data-name="<?php echo htmlspecialchars($pet['name']); ?>"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#medicalRecordsModal"
+                                            title="View Medical Records">
+                                        </i>
                                         <i class="fa-solid fa-pen-to-square" title="edit pet" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#editPetModal<?php echo $pet['pet_id']; ?>"></i>
 
                                         <div class="modal fade" id="editPetModal<?php echo $pet['pet_id']; ?>" tabindex="-1" aria-labelledby="editPetModalLabel<?php echo $pet['pet_id']; ?>" aria-hidden="true">
@@ -438,6 +444,38 @@ if ($result) {
         </div>
     </div>
 
+    <div class="modal fade" id="medicalRecordsModal" tabindex="-1" aria-labelledby="medicalRecordsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><span id="modalPetName"></span>'s Medical Records</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-sm table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Description</th>
+                                <th>Weight</th>
+                                <th>Temperature</th>
+                                <th>Complaint</th>
+                            </tr>
+                        </thead>
+                        <tbody id="medicalRecordsTable">
+                            <tr>
+                                <td colspan="8" class="text-center">Select a pet to view medical records</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <?php if (isset($_GET['modal']) && $_GET['modal'] === 'add' && !empty($errors)): ?>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
@@ -446,6 +484,46 @@ if ($result) {
             });
         </script>
     <?php endif; ?>
+
+    <script>
+        document.querySelectorAll('.view-medical-records').forEach(icon => {
+            icon.addEventListener('click', () => {
+                const petId = icon.getAttribute('data-id');
+                const petName = icon.getAttribute('data-name');
+                const modalTitle = document.getElementById('modalPetName');
+                const tableBody = document.getElementById('medicalRecordsTable');
+
+                modalTitle.textContent = petName;
+                tableBody.innerHTML = `<tr><td colspan="8" class="text-center">Loading...</td></tr>`;
+
+                fetch(`../actions/fetch_medical_records.php?pet_id=${petId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.length === 0) {
+                            tableBody.innerHTML = `<tr><td colspan="8" class="text-center">No records found.</td></tr>`;
+                        } else {
+                            tableBody.innerHTML = '';
+                            data.forEach(row => {
+                                tableBody.innerHTML += `
+                            <tr>
+                                <td>${row.id}</td>
+                                <td>${row.type}</td>
+                                <td>${row.start_date}</td>
+                                <td>${row.end_date}</td>
+                                <td>${row.description}</td>
+                                <td>${row.weight}</td>
+                                <td>${row.temperature}</td>
+                                <td>${row.complaint}</td>
+                            </tr>`;
+                            });
+                        }
+                    })
+                    .catch(() => {
+                        tableBody.innerHTML = `<tr><td colspan="8" class="text-danger text-center">Error fetching data.</td></tr>`;
+                    });
+            });
+        });
+    </script>
 
     <?php include('../components/toast.php'); ?>
     <?php include('../components/script.php'); ?>

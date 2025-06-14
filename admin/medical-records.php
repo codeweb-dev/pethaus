@@ -138,7 +138,7 @@ if ($result) {
                                             <div class="wizard-step d-none" data-step="3">
                                                 <h5 class="mb-3">Step 3: Treatment</h5>
 
-                                                <button type="button" class="btn btn-outline-primary mb-3" id="addTreatmentBtn">+ Add Treatment</button>
+                                                <button type="button" class="btn bg-black text-white mb-3" id="addTreatmentBtn">+ Add Treatment</button>
 
                                                 <div id="treatmentForm" class="d-none">
                                                     <div class="row g-2 mb-2">
@@ -170,7 +170,7 @@ if ($result) {
                                             <div class="wizard-step d-none" data-step="4">
                                                 <h5 class="mb-3">Step 4: Prescription</h5>
 
-                                                <button type="button" class="btn btn-outline-primary mb-3" id="addPrescriptionBtn">+ Add Prescription</button>
+                                                <button type="button" class="btn bg-black text-white mb-3" id="addPrescriptionBtn">+ Add Prescription</button>
 
                                                 <div id="prescriptionForm" class="d-none">
                                                     <div class="row g-2 mb-2">
@@ -202,7 +202,7 @@ if ($result) {
                                             <div class="wizard-step d-none" data-step="5">
                                                 <h5 class="mb-3">Step 5: Other Charges</h5>
 
-                                                <button type="button" class="btn btn-outline-primary mb-3" id="addOthersBtn">+ Add Other</button>
+                                                <button type="button" class="btn bg-black text-white mb-3" id="addOthersBtn">+ Add Other</button>
 
                                                 <div id="othersForm" class="d-none">
                                                     <div class="row g-2 mb-2">
@@ -232,9 +232,23 @@ if ($result) {
                                         </div>
                                     </div>
 
-                                    <div class="modal-footer d-flex justify-content-between">
-                                        <button type="button" class="btn bg-black text-white" id="prevBtn" disabled>Back</button>
-                                        <button type="button" class="btn bg-black text-white" id="nextBtn">Next</button>
+                                    <div class="modal-footer flex-column gap-2">
+                                        <div class="form-check d-flex justify-content-start gap-3 mb-2">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="create_bill" id="createBillCheckbox" value="1">
+                                                <label class="form-check-label" for="createBillCheckbox">Create Bill</label>
+                                            </div>
+
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="print_bill" id="printBillCheckbox" value="1">
+                                                <label class="form-check-label" for="printBillCheckbox">Print Bill after submission</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between w-100">
+                                            <button type="button" class="btn bg-black text-white" id="prevBtn" disabled>Back</button>
+                                            <button type="button" class="btn bg-black text-white" id="nextBtn">Next</button>
+                                        </div>
                                     </div>
                                 </form>
                             </div>
@@ -326,7 +340,19 @@ if ($result) {
                 }
             } else {
                 // Final Submit
-                document.getElementById('medicalRecordForm').submit();
+                if (document.getElementById('printBillCheckbox').checked) {
+                    // Use a temporary target to open in a new tab
+                    const form = document.getElementById('medicalRecordForm');
+                    form.target = '_blank'; // open in new tab
+                    form.submit();
+                    form.target = ''; // reset target
+                    
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    document.getElementById('medicalRecordForm').submit();
+                }
             }
         });
 

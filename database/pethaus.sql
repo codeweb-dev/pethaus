@@ -95,7 +95,7 @@ CREATE TABLE payment_history (
   medical_record_id INT NOT NULL,
   payment_amount DECIMAL(10, 2) NOT NULL,
   payment_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (medical_record_id) REFERENCES medical_records(medical_record_id)
+  FOREIGN KEY (medical_record_id) REFERENCES medical_records(medical_record_id) ON DELETE CASCADE
 );
 
 CREATE TABLE `dogs` (

@@ -84,14 +84,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($stmt->execute()) {
         $medical_id = $conn->insert_id;
-        $total = floatval($treat_charge) + floatval($rx_charge) + floatval($other_charge);
 
-        $stmt2 = $conn->prepare("
-                INSERT INTO medical_bill (medical_record_id, owner_id, total_amount, status, billing_date)
-                VALUES (?, ?, ?, 'Pending', NOW())
-            ");
-        $stmt2->bind_param("iid", $medical_id, $owner_id, $total);
-        $stmt2->execute();
+        if (isset($_POST['create_bill'])) {
+            $total = floatval($treat_charge) + floatval($rx_charge) + floatval($other_charge);
+
+            $stmt2 = $conn->prepare("
+            INSERT INTO medical_bill (medical_record_id, owner_id, total_amount, status, billing_date)
+            VALUES (?, ?, ?, 'Pending', NOW())
+        ");
+            $stmt2->bind_param("iid", $medical_id, $owner_id, $total);
+            $stmt2->execute();
+        }
+
+        if (isset($_POST['print_bill'])) {
+            header("Location: ../actions/view_bill.php?record_id=$medical_id");
+            exit;
+        }
 
         header("Location: ../admin/medical-records.php?success=Successfully added medical record");
         exit;
