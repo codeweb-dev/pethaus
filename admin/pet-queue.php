@@ -24,51 +24,118 @@
             </div>
 
             <div class="col-md-10 bg-light min-vh-100 py-4 px-3">
-                <h3 class="fw-bold mb-3">Pet Queue</h3>
+                <h3 class="fw-bold mb-4">Pet Queue</h3>
 
-                <div class="d-flex justify-content-between mb-5">
-                    <div class="w-50">
-                        <input type="text" class="form-control" placeholder="Search for pets...">
-                    </div>
-
-                    <div class="d-flex gap-2">
-                        <button class="btn bg-black text-white">Refresh</button>
-                        <button class="btn bg-black text-white">Add new record</button>
+                <!-- REGISTRATION PART -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-dark text-white fw-bold">Registration</div>
+                    <div class="card-body">
+                        <form class="row g-3">
+                            <div class="col-md-4">
+                                <label for="ownerName" class="form-label">Owner Name</label>
+                                <input type="text" class="form-control" id="ownerName" placeholder="Juan Dela Cruz">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="petName" class="form-label">Pet Name</label>
+                                <input type="text" class="form-control" id="petName" placeholder="Buddy">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="serviceType" class="form-label">Service Type</label>
+                                <select class="form-select" id="serviceType">
+                                    <option selected disabled>Select service...</option>
+                                    <option value="Checkup">Checkup</option>
+                                    <option value="Vaccination">Vaccination</option>
+                                    <option value="Grooming">Grooming</option>
+                                </select>
+                            </div>
+                            <div class="col-12 text-end">
+                                <button type="submit" class="btn btn-primary">Register</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
 
-                <div>
-                    <table class="table table-hover table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">First</th>
-                                <th scope="col">Last</th>
-                                <th scope="col">Handle</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td>John</td>
-                                <td>Doe</td>
-                                <td>@social</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <!-- MANAGE QUEUE -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-dark text-white fw-bold">Manage Queue</div>
+                    <div class="card-body table-responsive">
+                        <table class="table table-bordered table-hover align-middle">
+                            <thead class="table-secondary">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Owner</th>
+                                    <th>Pet</th>
+                                    <th>Service</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Example row -->
+                                <tr>
+                                    <td>1</td>
+                                    <td>Juan Dela Cruz</td>
+                                    <td>Buddy</td>
+                                    <td>Checkup</td>
+                                    <td><span class="badge bg-warning text-dark">Waiting</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-success">Serve</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Ana Santos</td>
+                                    <td>Max</td>
+                                    <td>Vaccination</td>
+                                    <td><span class="badge bg-success">In Service</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-secondary">Complete</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Michael Lee</td>
+                                    <td>Snowy</td>
+                                    <td>Grooming</td>
+                                    <td><span class="badge bg-secondary">Done</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-danger">Remove</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+
+                <!-- DISPLAY QUEUE -->
+                <div class="card shadow-sm">
+                    <div class="card-header bg-dark text-white fw-bold">Display Queue</div>
+                    <div class="card-body">
+                        <h4 class="text-primary mb-4">Currently Serving: <span class="fw-bold text-dark">Max (Ana Santos)</span></h4>
+
+                        <div class="row row-cols-1 row-cols-md-3 g-3">
+                            <div class="col">
+                                <div class="card p-3 shadow-sm">
+                                    <h6 class="fw-bold mb-1">Buddy <span class="badge bg-warning text-dark">Waiting</span></h6>
+                                    <small>Owner: Juan Dela Cruz</small>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card p-3 shadow-sm">
+                                    <h6 class="fw-bold mb-1">Max <span class="badge bg-success">In Service</span></h6>
+                                    <small>Owner: Ana Santos</small>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card p-3 shadow-sm">
+                                    <h6 class="fw-bold mb-1">Snowy <span class="badge bg-secondary">Done</span></h6>
+                                    <small>Owner: Michael Lee</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

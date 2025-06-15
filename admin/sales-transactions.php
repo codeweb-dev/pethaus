@@ -27,48 +27,140 @@
                 <h3 class="fw-bold mb-3">Sales Transaction</h3>
 
                 <div class="d-flex justify-content-between mb-5">
-                    <div class="w-50">
-                        <input type="text" class="form-control" placeholder="Search for pets...">
-                    </div>
-
-                    <div class="d-flex gap-2">
-                        <button class="btn bg-black text-white">Refresh</button>
-                        <button class="btn bg-black text-white">Add new record</button>
+                    <div class="w-auto">
+                        <div>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-chart-line"></i></span>
+                                <input type="text" class="form-control" id="searchInput" placeholder="Search sales transaction...">
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div>
-                    <table class="table table-hover table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">First</th>
-                                <th scope="col">Last</th>
-                                <th scope="col">Handle</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td>John</td>
-                                <td>Doe</td>
-                                <td>@social</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="row">
+                    <!-- LEFT SIDE: Sales Transactions Table -->
+                    <div class="col-md-7">
+                        <h5 class="fw-bold">Sales Records</h5>
+                        <table class="table table-bordered table-hover" id="salesTable">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Date</th>
+                                    <th>Total Amount (₱)</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Sample row -->
+                                <tr>
+                                    <td>1001</td>
+                                    <td>2025-06-15</td>
+                                    <td>₱1,850.00</td>
+                                    <td>
+                                        <button class="btn bg-black text-white" data-bs-toggle="modal" data-bs-target="#detailsModal">
+                                            <i class="fas fa-cart-plus"></i> Open cart
+                                        </button>
+                                    </td>
+                                </tr>
+                                <!-- Additional rows will go here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- RIGHT SIDE: Sales Summary -->
+                    <div class="col-md-5">
+                        <h5 class="fw-bold">Sales Summary</h5>
+
+                        <div class="card p-3 mb-3 shadow-sm">
+                            <div class="mb-2">
+                                <label for="fromDate" class="form-label">From:</label>
+                                <input type="date" id="fromDate" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label for="toDate" class="form-label">To:</label>
+                                <input type="date" id="toDate" class="form-control">
+                            </div>
+                            <button class="btn btn-dark w-100 mb-3">Filter</button>
+
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>No. of Sales:</span> <strong>12</strong>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Product Sold:</span> <strong>56</strong>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Total (₱):</span> <strong>₱8,460.00</strong>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Average (₱):</span> <strong>₱705.00</strong>
+                                </li>
+                            </ul>
+
+                            <h6 class="fw-bold mt-3">Overall Summary</h6>
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Total No. of Sales:</span> <strong>143</strong>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Total Product Sold:</span> <strong>692</strong>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Grand Total (₱):</span> <strong>₱143,880.00</strong>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Total Average (₱):</span> <strong>₱1,005.45</strong>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Cart Modal -->
+                <div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title fw-bold" id="detailsModalLabel">Cart Details</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <table class="table table-bordered">
+                                    <thead class="table-secondary">
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Quantity</th>
+                                            <th>Price (₱)</th>
+                                            <th>Subtotal (₱)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Dog Food</td>
+                                            <td>2</td>
+                                            <td>₱400</td>
+                                            <td>₱800</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Vitamin Syrup</td>
+                                            <td>1</td>
+                                            <td>₱450</td>
+                                            <td>₱450</td>
+                                        </tr>
+                                        <!-- More rows dynamically -->
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="table-dark">
+                                            <td colspan="3" class="text-end fw-bold">Total</td>
+                                            <td class="fw-bold">₱1,250</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

@@ -39,22 +39,19 @@ $current_page = basename($_SERVER['PHP_SELF']);
     </li>
     <li class="<?= $current_page === 'sales-transactions.php' ? 'active' : '' ?>">
         <a href="sales-transactions.php">
-            <!-- <i class="fa-solid fa-chart-line"></i>  -->
-            <i class="fa-solid fa-x"></i>
+            <i class="fa-solid fa-chart-line"></i>
             Sales Transactions
         </a>
     </li>
     <li class="<?= $current_page === 'open-cart.php' ? 'active' : '' ?>">
         <a href="open-cart.php">
-            <!-- <i class="fa-solid fa-cart-plus"></i>  -->
-            <i class="fa-solid fa-x"></i>
+            <i class="fa-solid fa-cart-plus"></i> 
             Open Cart
         </a>
     </li>
     <li class="<?= $current_page === 'pet-queue.php' ? 'active' : '' ?>">
         <a href="pet-queue.php">
-            <!-- <i class="fa-solid fa-clipboard-list"></i>  -->
-            <i class="fa-solid fa-x"></i>
+            <i class="fa-solid fa-clipboard-list"></i>
             Pet Queue
         </a>
     </li>

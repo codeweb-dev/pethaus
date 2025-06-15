@@ -27,47 +27,113 @@
                 <h3 class="fw-bold mb-3">Open Cart</h3>
 
                 <div class="d-flex justify-content-between mb-5">
-                    <div class="w-50">
-                        <input type="text" class="form-control" placeholder="Search for pets...">
-                    </div>
-
-                    <div class="d-flex gap-2">
-                        <button class="btn bg-black text-white">Refresh</button>
-                        <button class="btn bg-black text-white">Add new record</button>
+                    <div class="w-auto">
+                        <div>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-cart-plus"></i></span>
+                                <input type="text" class="form-control" id="searchInput" placeholder="Search carts...">
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div>
-                    <table class="table table-hover table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">First</th>
-                                <th scope="col">Last</th>
-                                <th scope="col">Handle</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td>John</td>
-                                <td>Doe</td>
-                                <td>@social</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="fw-bold mb-3">Cart Items</h5>
+
+                        <table class="table table-bordered align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Price (₱)</th>
+                                    <th>Unit</th>
+                                    <th>Subtotal (₱)</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Sample row -->
+                                <tr>
+                                    <td>Dog Shampoo</td>
+                                    <td class="d-flex align-items-center gap-2">
+                                        <button class="btn btn-sm btn-outline-secondary">-</button>
+                                        <input type="number" class="form-control form-control-sm text-center" style="width: 60px;" value="1">
+                                        <button class="btn btn-sm btn-outline-secondary">+</button>
+                                    </td>
+                                    <td>₱150</td>
+                                    <td>Bottle</td>
+                                    <td>₱150</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>
+                                    </td>
+                                </tr>
+                                <!-- Repeat for other products -->
+                            </tbody>
+                            <tfoot>
+                                <tr class="table-light fw-bold">
+                                    <td colspan="4" class="text-end">Total:</td>
+                                    <td colspan="2">₱150</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <div class="text-end">
+                            <button class="btn bg-black text-white" data-bs-toggle="modal" data-bs-target="#placeOrderModal">Check Out</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Place Order Modal -->
+                <div class="modal fade" id="placeOrderModal" tabindex="-1" aria-labelledby="placeOrderModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title fw-bold" id="placeOrderModalLabel">View Receipt</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <p class="mb-1"><strong>Clinic:</strong> PetHaus Veterinary Clinic</p>
+                                    <p class="mb-1"><strong>Prepared By:</strong> Dr. Marlon Santos</p>
+                                    <p class="mb-3"><strong>Date:</strong> <?= date('F j, Y'); ?></p>
+                                </div>
+
+                                <table class="table table-bordered">
+                                    <thead class="table-secondary">
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Qty</th>
+                                            <th>Price (₱)</th>
+                                            <th>Subtotal (₱)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Dog Shampoo</td>
+                                            <td>1</td>
+                                            <td>₱150</td>
+                                            <td>₱150</td>
+                                        </tr>
+                                        <!-- More rows -->
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="table-dark">
+                                            <td colspan="3" class="text-end fw-bold">Total</td>
+                                            <td class="fw-bold">₱150</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button class="btn bg-black text-white">Place Order</button>
+                                <button class="btn bg-black text-white" data-bs-dismiss="modal">Close</button>
+                                <button class="btn bg-black text-white"><i class="fas fa-print"></i> Print</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
