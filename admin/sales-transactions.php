@@ -1,4 +1,77 @@
-<?php session_start(); ?>
+<?php
+session_start();
+include '../conn.php';
+
+$fromDate = $_GET['fromDate'] ?? null;
+$toDate = $_GET['toDate'] ?? null;
+
+$dateFilter = '';
+if ($fromDate && $toDate) {
+    $dateFilter = "WHERE others_date BETWEEN '$fromDate' AND '$toDate'";
+} elseif ($fromDate) {
+    $dateFilter = "WHERE others_date >= '$fromDate'";
+} elseif ($toDate) {
+    $dateFilter = "WHERE others_date <= '$toDate'";
+}
+
+$salesQuery = mysqli_query($conn, "
+    SELECT * FROM sales 
+    $dateFilter 
+    ORDER BY sale_id DESC
+");
+
+$sales = [];
+while ($sale = mysqli_fetch_assoc($salesQuery)) {
+    $sale_id = $sale['sale_id'];
+    $items = mysqli_query($conn, "
+        SELECT p.name AS product_name, ps.sale_quantity, ps.sale_price, ps.total_amount
+        FROM product_sale ps
+        JOIN products p ON p.product_id = ps.product_id
+        WHERE ps.sale_id = $sale_id
+    ");
+
+    $total = 0;
+    $products = [];
+
+    while ($row = mysqli_fetch_assoc($items)) {
+        $products[] = $row;
+        $total += $row['total_amount'];
+    }
+
+    $sales[] = [
+        'sale_id' => $sale_id,
+        'date' => $sale['others_date'],
+        'total' => $total,
+        'items' => $products
+    ];
+}
+
+$totalSales = count($sales);
+$totalAmount = 0;
+$totalProductsSold = 0;
+
+foreach ($sales as $sale) {
+    $totalAmount += $sale['total'];
+    foreach ($sale['items'] as $item) {
+        $totalProductsSold += $item['sale_quantity'];
+    }
+}
+$averageSale = $totalSales > 0 ? ($totalAmount / $totalSales) : 0;
+
+$grandQuery = mysqli_query($conn, "
+    SELECT COUNT(DISTINCT s.sale_id) AS total_sales,
+           SUM(ps.sale_quantity) AS total_products,
+           SUM(ps.total_amount) AS total_revenue
+    FROM sales s
+    JOIN product_sale ps ON ps.sale_id = s.sale_id
+");
+
+$grandData = mysqli_fetch_assoc($grandQuery);
+$grandTotalSales = $grandData['total_sales'] ?? 0;
+$grandProducts = $grandData['total_products'] ?? 0;
+$grandRevenue = $grandData['total_revenue'] ?? 0;
+$grandAverage = $grandTotalSales > 0 ? ($grandRevenue / $grandTotalSales) : 0;
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -38,7 +111,6 @@
                 </div>
 
                 <div class="row">
-                    <!-- LEFT SIDE: Sales Transactions Table -->
                     <div class="col-md-7">
                         <h5 class="fw-bold">Sales Records</h5>
                         <table class="table table-bordered table-hover" id="salesTable">
@@ -50,73 +122,85 @@
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <!-- Sample row -->
-                                <tr>
-                                    <td>1001</td>
-                                    <td>2025-06-15</td>
-                                    <td>₱1,850.00</td>
-                                    <td>
-                                        <button class="btn bg-black text-white" data-bs-toggle="modal" data-bs-target="#detailsModal">
-                                            <i class="fas fa-cart-plus"></i> Open cart
-                                        </button>
-                                    </td>
-                                </tr>
-                                <!-- Additional rows will go here -->
+                            <tbody id="salesBody">
+                                <?php foreach ($sales as $sale): ?>
+                                    <tr>
+                                        <td><?= $sale['sale_id'] ?></td>
+                                        <td><?= $sale['date'] ?></td>
+                                        <td>₱<?= number_format($sale['total'], 2) ?></td>
+                                        <td>
+                                            <button
+                                                class="btn bg-black text-white open-cart-btn"
+                                                data-sale-id="<?= $sale['sale_id'] ?>"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#detailsModal"
+                                                data-items='<?= json_encode($sale['items']) ?>'
+                                                data-total="<?= $sale['total'] ?>">
+                                                <i class="fas fa-cart-plus"></i> Open cart
+                                            </button>
+                                        </td>
+                                    </tr>
+
+                                    <?php if (count($sales) === 0): ?>
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted">No sales found for selected date range.</td>
+                                        </tr>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>
 
-                    <!-- RIGHT SIDE: Sales Summary -->
                     <div class="col-md-5">
                         <h5 class="fw-bold">Sales Summary</h5>
 
                         <div class="card p-3 mb-3 shadow-sm">
-                            <div class="mb-2">
-                                <label for="fromDate" class="form-label">From:</label>
-                                <input type="date" id="fromDate" class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label for="toDate" class="form-label">To:</label>
-                                <input type="date" id="toDate" class="form-control">
-                            </div>
-                            <button class="btn btn-dark w-100 mb-3">Filter</button>
+                            <form class="mb-3" method="GET">
+                                <div class="mb-2">
+                                    <label for="fromDate" class="form-label">From:</label>
+                                    <input type="date" id="fromDate" name="fromDate" class="form-control" value="<?= $_GET['fromDate'] ?? '' ?>">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="toDate" class="form-label">To:</label>
+                                    <input type="date" id="toDate" name="toDate" class="form-control" value="<?= $_GET['toDate'] ?? '' ?>">
+                                </div>
+                                <button type="submit" class="btn btn-dark w-100">Filter</button>
+                            </form>
 
                             <ul class="list-group">
                                 <li class="list-group-item d-flex justify-content-between">
-                                    <span>No. of Sales:</span> <strong>12</strong>
+                                    <span>No. of Sales:</span> <strong><?= $totalSales ?></strong>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between">
-                                    <span>Product Sold:</span> <strong>56</strong>
+                                    <span>Product Sold:</span> <strong><?= $totalProductsSold ?></strong>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between">
-                                    <span>Total (₱):</span> <strong>₱8,460.00</strong>
+                                    <span>Total (₱):</span> <strong>₱<?= number_format($totalAmount, 2) ?></strong>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between">
-                                    <span>Average (₱):</span> <strong>₱705.00</strong>
+                                    <span>Average (₱):</span> <strong>₱<?= number_format($averageSale, 2) ?></strong>
                                 </li>
                             </ul>
 
                             <h6 class="fw-bold mt-3">Overall Summary</h6>
                             <ul class="list-group">
                                 <li class="list-group-item d-flex justify-content-between">
-                                    <span>Total No. of Sales:</span> <strong>143</strong>
+                                    <span>Total No. of Sales:</span> <strong><?= $grandTotalSales ?></strong>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between">
-                                    <span>Total Product Sold:</span> <strong>692</strong>
+                                    <span>Total Product Sold:</span> <strong><?= $grandProducts ?></strong>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between">
-                                    <span>Grand Total (₱):</span> <strong>₱143,880.00</strong>
+                                    <span>Grand Total (₱):</span> <strong>₱<?= number_format($grandRevenue, 2) ?></strong>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between">
-                                    <span>Total Average (₱):</span> <strong>₱1,005.45</strong>
+                                    <span>Total Average (₱):</span> <strong>₱<?= number_format($grandAverage, 2) ?></strong>
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </div>
 
-                <!-- Cart Modal -->
                 <div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg modal-dialog-centered">
                         <div class="modal-content">
@@ -134,25 +218,11 @@
                                             <th>Subtotal (₱)</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Dog Food</td>
-                                            <td>2</td>
-                                            <td>₱400</td>
-                                            <td>₱800</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Vitamin Syrup</td>
-                                            <td>1</td>
-                                            <td>₱450</td>
-                                            <td>₱450</td>
-                                        </tr>
-                                        <!-- More rows dynamically -->
-                                    </tbody>
+                                    <tbody id="cartItemsBody"></tbody>
                                     <tfoot>
                                         <tr class="table-dark">
                                             <td colspan="3" class="text-end fw-bold">Total</td>
-                                            <td class="fw-bold">₱1,250</td>
+                                            <td class="fw-bold" id="cartTotal"></td>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -165,6 +235,39 @@
         </div>
     </div>
 
+    <script>
+        document.querySelectorAll('.open-cart-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const items = JSON.parse(btn.getAttribute('data-items'));
+                const total = btn.getAttribute('data-total');
+                const tbody = document.getElementById('cartItemsBody');
+                const totalEl = document.getElementById('cartTotal');
+
+                tbody.innerHTML = '';
+                items.forEach(item => {
+                    tbody.innerHTML += `
+                <tr>
+                    <td>${item.product_name}</td>
+                    <td>${item.sale_quantity}</td>
+                    <td>₱${parseFloat(item.sale_price).toFixed(2)}</td>
+                    <td>₱${parseFloat(item.total_amount).toFixed(2)}</td>
+                </tr>`;
+                });
+
+                totalEl.textContent = '₱' + parseFloat(total).toFixed(2);
+            });
+        });
+
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            const query = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#salesTable tbody tr');
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        });
+    </script>
     <?php include('../components/script.php'); ?>
 </body>
 

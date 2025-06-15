@@ -44,6 +44,27 @@ CREATE TABLE `products` (
   `stock` VARCHAR(250) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+CREATE TABLE `sales` (
+  `sale_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `others_date` DATE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `product_sale` (
+  `product_sale_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `product_id` INT NULL,
+  `sale_id` INT NULL,
+  `sale_price` DECIMAL(10,2) NOT NULL,
+  `sale_quantity` INT NOT NULL DEFAULT 1,
+  `unit_of_measure` VARCHAR(250) NOT NULL,
+  `total_amount` DECIMAL(10,2) NOT NULL,
+  FOREIGN KEY (`product_id`) REFERENCES `products`(`product_id`)
+    ON UPDATE CASCADE
+    ON DELETE SET NULL,
+  FOREIGN KEY (`sale_id`) REFERENCES `sales`(`sale_id`)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- Medical Records Table (already linked to pet and user)
 CREATE TABLE `medical_records` (
   `medical_record_id` INT AUTO_INCREMENT PRIMARY KEY,

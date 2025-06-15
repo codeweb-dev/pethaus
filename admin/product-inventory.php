@@ -281,7 +281,80 @@ if ($result) {
                                     <td class="p-3"><?php echo $product['category']; ?></td>
                                     <td class="p-3"><?php echo $product['quantity']; ?></td>
                                     <td class="p-3"><?php echo $product['stock']; ?></td>
-                                    <td class="p-3">
+                                    <td class="p-3 d-flex align-items-center gap-3">
+                                        <i class="fa-solid fa-cart-shopping text-black" title="Add to Cart" style="cursor: pointer;"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#addToCartModal<?php echo $product['product_id']; ?>"></i>
+
+                                        <div class="modal fade" id="addToCartModal<?php echo $product['product_id']; ?>" tabindex="-1" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <form method="POST" action="../actions/add_to_cart.php">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Add to Cart - <?php echo htmlspecialchars($product['name']); ?></h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Product Name</label>
+                                                                <input type="text" class="form-control" value="<?php echo htmlspecialchars($product['name']); ?>" readonly>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Available Quantity</label>
+                                                                <input type="number" class="form-control" value="<?php echo $product['quantity']; ?>" readonly>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Original Price</label>
+                                                                <input type="text" class="form-control" id="price_<?php echo $product['product_id']; ?>" value="<?php echo $product['price']; ?>" readonly>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Sell By (Unit of Measure)</label>
+                                                                <select name="unit_of_measure" class="form-select" required>
+                                                                    <option value="<?php echo $product['unit_of_measure']; ?>"><?php echo $product['unit_of_measure']; ?></option>
+                                                                    <!-- Optional: You can offer more units if applicable -->
+                                                                </select>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Sale Quantity</label>
+                                                                <input
+                                                                    type="number"
+                                                                    name="sale_quantity"
+                                                                    class="form-control"
+                                                                    min="1"
+                                                                    max="<?php echo $product['quantity']; ?>"
+                                                                    value="1"
+                                                                    id="saleQty_<?php echo $product['product_id']; ?>"
+                                                                    oninput="updateTotalPrice(<?php echo $product['product_id']; ?>)"
+                                                                    required>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Actual Price Sold</label>
+                                                                <input
+                                                                    type="text"
+                                                                    name="actual_price"
+                                                                    class="form-control"
+                                                                    id="totalPrice_<?php echo $product['product_id']; ?>"
+                                                                    value="<?php echo $product['price']; ?>"
+                                                                    readonly>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn bg-black text-white" data-bs-dismiss="modal">Cancel</button>
+                                                            <button type="submit" class="btn bg-black text-white">Add to Cart</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <i class="fa-solid fa-pen-to-square" title="edit pet" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#editProductModal<?php echo $product['product_id']; ?>"></i>
 
                                         <div class="modal fade" id="editProductModal<?php echo $product['product_id']; ?>" tabindex="-1" aria-labelledby="editProductModalLabel<?php echo $product['product_id']; ?>" aria-hidden="true">
@@ -396,6 +469,13 @@ if ($result) {
                 }
             });
         });
+
+        function updateTotalPrice(productId) {
+            const price = parseFloat(document.getElementById('price_' + productId).value);
+            const qty = parseInt(document.getElementById('saleQty_' + productId).value) || 0;
+            const total = (price * qty).toFixed(2);
+            document.getElementById('totalPrice_' + productId).value = total;
+        }
     </script>
 </body>
 
