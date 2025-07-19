@@ -230,10 +230,11 @@ if ($result) {
                                                             <option value="" disabled <?php echo empty($old['owner_id']) ? 'selected' : ''; ?>>Select Owner</option>
                                                             <?php
                                                             $owners = mysqli_query($conn, "
-                                                                                    SELECT owner_id, CONCAT(first_name, ' ', middle_name, ' ', last_name) AS full_name 
-                                                                                    FROM pet_owner_records 
-                                                                                    ORDER BY first_name
-                                                                                ");
+                                                                    SELECT owner_id, CONCAT_WS(' ', first_name, middle_name, last_name) AS full_name 
+                                                                    FROM pet_owner_records 
+                                                                    ORDER BY first_name
+                                                                ");
+
                                                             while ($row = mysqli_fetch_assoc($owners)) {
                                                                 $selected = ($old['owner_id'] ?? '') == $row['owner_id'] ? 'selected' : '';
                                                                 echo '<option value="' . $row['owner_id'] . '" ' . $selected . '>' . htmlspecialchars($row['full_name']) . '</option>';
