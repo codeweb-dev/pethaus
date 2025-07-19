@@ -1,4 +1,56 @@
-<?php session_start(); ?>
+<?php
+session_start();
+include('../conn.php');
+
+// Handle registration
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['register'])) {
+    $ownerName = $_POST['owner_name'];
+    $petName = $_POST['pet_name'];
+    $serviceType = $_POST['service_type'];
+    $userId = $_SESSION['user_id'];
+
+    // Generate queue number (e.g., Q0001, Q0002, etc.)
+    $result = $conn->query("SELECT MAX(queue_id) AS max_id FROM pet_queue");
+    $row = $result->fetch_assoc();
+    $nextId = $row['max_id'] + 1;
+    $queueNumber = 'Q' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
+
+    $stmt = $conn->prepare("INSERT INTO pet_queue (queue_number, owner_name, pet_name, service_type, status, created_at, user_id) VALUES (?, ?, ?, ?, 'Waiting', NOW(), ?)");
+    $stmt->bind_param("ssssi", $queueNumber, $ownerName, $petName, $serviceType, $userId);
+    $stmt->execute();
+    $stmt->close();
+
+    header("Location: pet-queue.php");
+    exit();
+}
+
+// Handle action links
+if (isset($_GET['action']) && isset($_GET['id'])) {
+    $queue_id = intval($_GET['id']);
+    switch ($_GET['action']) {
+        case 'serve':
+            // Allow only max 3 "In Service"
+            $count = $conn->query("SELECT COUNT(*) as cnt FROM pet_queue WHERE status='In Service'")->fetch_assoc()['cnt'];
+            if ($count < 3) {
+                $conn->query("UPDATE pet_queue SET status='In Service' WHERE queue_id=$queue_id");
+            }
+            break;
+        case 'complete':
+            $conn->query("UPDATE pet_queue SET status='Done' WHERE queue_id=$queue_id");
+            $_SESSION['play_sound'] = true;
+            break;
+        case 'remove':
+            $conn->query("DELETE FROM pet_queue WHERE queue_id=$queue_id");
+            break;
+    }
+    header("Location: pet-queue.php");
+    exit();
+}
+
+// Get data
+$queueList = $conn->query("SELECT * FROM pet_queue ORDER BY created_at ASC");
+$currentServing = $conn->query("SELECT * FROM pet_queue WHERE status='In Service' ORDER BY created_at ASC LIMIT 1")->fetch_assoc();
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -81,6 +133,9 @@
             background: #f8f9fa;
         }
     </style>
+    <audio id="queue-complete-sound" preload="auto">
+        <source src="../assets/sounds/complete.mp3" type="audio/mpeg">
+    </audio>
 </head>
 
 <body>
@@ -158,32 +213,46 @@
             <div class="w-auto">
                 <h3 class="fw-bold mb-4">Pet Queue</h3>
 
-                <!-- REGISTRATION PART -->
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-dark text-white fw-bold">Registration</div>
-                    <div class="card-body">
-                        <form class="row g-3">
-                            <div class="col-md-4">
-                                <label for="ownerName" class="form-label">Owner Name</label>
-                                <input type="text" class="form-control" id="ownerName" placeholder="Juan Dela Cruz">
-                            </div>
-                            <div class="col-md-4">
-                                <label for="petName" class="form-label">Pet Name</label>
-                                <input type="text" class="form-control" id="petName" placeholder="Buddy">
-                            </div>
-                            <div class="col-md-4">
-                                <label for="serviceType" class="form-label">Service Type</label>
-                                <select class="form-select" id="serviceType">
-                                    <option selected disabled>Select service...</option>
-                                    <option value="Checkup">Checkup</option>
-                                    <option value="Vaccination">Vaccination</option>
-                                    <option value="Grooming">Grooming</option>
-                                </select>
-                            </div>
-                            <div class="col-12 text-end">
-                                <button type="submit" class="btn btn-primary">Register</button>
-                            </div>
-                        </form>
+                <div class="mb-4 text-end">
+                    <button class="btn bg-black text-white" data-bs-toggle="modal" data-bs-target="#registrationModal">
+                        <i class="fa-solid fa-plus"></i> Register Pet to Queue
+                    </button>
+                </div>
+
+                <div class="modal fade" id="registrationModal" tabindex="-1" aria-labelledby="registrationModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                            <form method="POST">
+                                <input type="hidden" name="register" value="1">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="registrationModalLabel">Register Pet</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body row g-3">
+                                    <div class="col-md-6">
+                                        <label for="ownerName" class="form-label">Owner Name</label>
+                                        <input type="text" class="form-control" id="ownerName" name="owner_name" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="petName" class="form-label">Pet Name</label>
+                                        <input type="text" class="form-control" id="petName" name="pet_name" required>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label for="serviceType" class="form-label">Service Type</label>
+                                        <select class="form-select" id="serviceType" name="service_type" required>
+                                            <option selected disabled>Select service...</option>
+                                            <option value="Checkup">Checkup</option>
+                                            <option value="Vaccination">Vaccination</option>
+                                            <option value="Grooming">Grooming</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn bg-black text-white">Register</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
 
@@ -195,6 +264,7 @@
                             <thead class="table-secondary">
                                 <tr>
                                     <th>#</th>
+                                    <th>Queue No.</th>
                                     <th>Owner</th>
                                     <th>Pet</th>
                                     <th>Service</th>
@@ -202,39 +272,38 @@
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <!-- Example row -->
+                            <?php
+                            $counter = 1;
+                            $queueList->data_seek(0);
+                            while ($row = $queueList->fetch_assoc()):
+                            ?>
                                 <tr>
-                                    <td>1</td>
-                                    <td>Juan Dela Cruz</td>
-                                    <td>Buddy</td>
-                                    <td>Checkup</td>
-                                    <td><span class="badge bg-warning text-dark">Waiting</span></td>
+                                    <td><?= $counter++ ?></td>
+                                    <td><?= htmlspecialchars($row['queue_number']) ?></td>
+                                    <td><?= htmlspecialchars($row['owner_name']) ?></td>
+                                    <td><?= htmlspecialchars($row['pet_name']) ?></td>
+                                    <td><?= htmlspecialchars($row['service_type']) ?></td>
                                     <td>
-                                        <button class="btn btn-sm btn-success">Serve</button>
+                                        <?php if ($row['status'] === 'Waiting'): ?>
+                                            <span class="badge bg-warning text-dark">Waiting</span>
+                                        <?php elseif ($row['status'] === 'In Service'): ?>
+                                            <span class="badge bg-success">In Service</span>
+                                        <?php else: ?>
+                                            <span class="badge bg-secondary">Done</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <?php if ($row['status'] === 'Waiting'): ?>
+                                            <a href="?action=serve&id=<?= $row['queue_id'] ?>" class="btn btn-sm btn-success">Serve</a>
+                                        <?php elseif ($row['status'] === 'In Service'): ?>
+                                            <a href="?action=complete&id=<?= $row['queue_id'] ?>" class="btn btn-sm btn-secondary">Complete</a>
+                                        <?php else: ?>
+                                            <a href="?action=remove&id=<?= $row['queue_id'] ?>" class="btn btn-sm btn-outline-danger">Remove</a>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>Ana Santos</td>
-                                    <td>Max</td>
-                                    <td>Vaccination</td>
-                                    <td><span class="badge bg-success">In Service</span></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-secondary">Complete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>Michael Lee</td>
-                                    <td>Snowy</td>
-                                    <td>Grooming</td>
-                                    <td><span class="badge bg-secondary">Done</span></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-danger">Remove</button>
-                                    </td>
-                                </tr>
-                            </tbody>
+                            <?php endwhile; ?>
+
                         </table>
                     </div>
                 </div>
@@ -243,31 +312,59 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-dark text-white fw-bold">Display Queue</div>
                     <div class="card-body">
-                        <h4 class="text-primary mb-4">Currently Serving: <span class="fw-bold text-dark">Max (Ana Santos)</span></h4>
+                        <h4 class="text-primary mb-4">Currently Serving:
+                            <span class="fw-bold text-dark">
+                                <?= $currentServing ? $currentServing['pet_name'] . ' (' . $currentServing['owner_name'] . ')' : 'None' ?>
+                            </span>
+                        </h4>
 
-                        <div class="row row-cols-1 row-cols-md-3 g-3">
-                            <div class="col">
-                                <div class="card p-3 shadow-sm">
-                                    <h6 class="fw-bold mb-1">Buddy <span class="badge bg-warning text-dark">Waiting</span></h6>
-                                    <small>Owner: Juan Dela Cruz</small>
-                                </div>
+                        <?php
+                        $queueList->data_seek(0);
+                        $waiting = $inService = $done = [];
+
+                        while ($row = $queueList->fetch_assoc()) {
+                            switch ($row['status']) {
+                                case 'Waiting':
+                                    $waiting[] = $row;
+                                    break;
+                                case 'In Service':
+                                    $inService[] = $row;
+                                    break;
+                                default:
+                                    $done[] = $row;
+                                    break;
+                            }
+                        }
+
+                        function renderQueueCards($data, $badgeClass)
+                        {
+                            foreach ($data as $item) {
+                                echo '<div class="card p-3 shadow-sm mb-3">';
+                                echo '<h6 class="fw-bold mb-1">'
+                                    . htmlspecialchars($item['queue_number']) . ' - ' . htmlspecialchars($item['pet_name']) .
+                                    ' <span class="badge ' . $badgeClass . '">' . htmlspecialchars($item['status']) . '</span></h6>';
+                                echo '<small>Owner: ' . htmlspecialchars($item['owner_name']) . '</small>';
+                                echo '</div>';
+                            }
+                        }
+                        ?>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h5 class="text-center">⏳ Waiting</h5>
+                                <?php renderQueueCards($waiting, 'bg-warning text-dark'); ?>
                             </div>
-                            <div class="col">
-                                <div class="card p-3 shadow-sm">
-                                    <h6 class="fw-bold mb-1">Max <span class="badge bg-success">In Service</span></h6>
-                                    <small>Owner: Ana Santos</small>
-                                </div>
+                            <div class="col-md-4">
+                                <h5 class="text-center">🛠️ In Service</h5>
+                                <?php renderQueueCards($inService, 'bg-success'); ?>
                             </div>
-                            <div class="col">
-                                <div class="card p-3 shadow-sm">
-                                    <h6 class="fw-bold mb-1">Snowy <span class="badge bg-secondary">Done</span></h6>
-                                    <small>Owner: Michael Lee</small>
-                                </div>
+                            <div class="col-md-4">
+                                <h5 class="text-center">✅ Completed</h5>
+                                <?php renderQueueCards($done, 'bg-secondary'); ?>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -313,6 +410,16 @@
             }, 10);
         });
     </script>
+
+    <?php if (isset($_SESSION['play_sound']) && $_SESSION['play_sound']): ?>
+        <script>
+            const audio = new Audio('../assets/sounds/complete.mp3');
+            audio.play().catch(error => {
+                console.warn("Autoplay blocked:", error);
+            });
+        </script>
+    <?php unset($_SESSION['play_sound']);
+    endif; ?>
 
     <?php include('../components/script.php'); ?>
 </body>

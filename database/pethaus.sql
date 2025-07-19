@@ -8,6 +8,18 @@ CREATE TABLE `users` (
   `password` VARCHAR(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+CREATE TABLE `pet_queue` (
+  `queue_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `queue_number` VARCHAR(50) DEFAULT NULL,
+  `owner_name` VARCHAR(255) NOT NULL,
+  `pet_name` VARCHAR(255) NOT NULL,
+  `service_type` VARCHAR(100) NOT NULL,
+  `status` VARCHAR(50) NOT NULL DEFAULT 'Waiting',
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `user_id` INT,
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 CREATE TABLE `pet_owner_records` (
   `owner_id` INT AUTO_INCREMENT PRIMARY KEY,
   `first_name` VARCHAR(255) NOT NULL,
