@@ -460,8 +460,8 @@ if ($petResult) {
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                            <button type="submit" class="btn bg-black text-white">Update Owner</button>
+                                                            <button type="button" class="btn text-black" style="background-color: #ABD29B;" data-bs-dismiss="modal">Cancel</button>
+                                                            <button type="submit" class="btn text-black" style="background-color: #FFD531;">Update Pet</button>
                                                         </div>
                                                     </form>
                                                 </div>

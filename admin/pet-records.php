@@ -462,12 +462,12 @@ if ($result) {
                                                             <form method="POST" action="../actions/update_pet_photo.php" enctype="multipart/form-data" class="mt-3 d-flex flex-column gap-2">
                                                                 <input type="hidden" name="pet_id" value="<?php echo $pet['pet_id']; ?>">
                                                                 <input type="file" name="photo" class="form-control" accept="image/*" required>
-                                                                <button type="submit" class="btn bg-black text-white w-100">Upload new photo</button>
+                                                                <button type="submit" class="btn text-black w-100" style="background-color: #FFD531;">Upload new photo</button>
                                                             </form>
 
                                                             <form method="POST" action="../actions/delete_pet_photo.php" onsubmit="return confirm('Are you sure you want to delete the photo?');">
                                                                 <input type="hidden" name="pet_id" value="<?php echo $pet['pet_id']; ?>">
-                                                                <button type="submit" class="btn btn-danger w-100">Delete Photo</button>
+                                                                <button type="submit" class="btn text-black w-100" style="background-color: #ABD29B;">Delete Photo</button>
                                                             </form>
                                                         </div>
                                                     </div>
@@ -539,8 +539,8 @@ if ($result) {
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                            <button type="submit" class="btn bg-black text-white">Update Pet</button>
+                                                            <button type="button" class="btn text-black" style="background-color: #ABD29B;" data-bs-dismiss="modal">Cancel</button>
+                                                            <button type="submit" class="btn text-black" style="background-color: #FFD531;">Update Pet</button>
                                                         </div>
                                                     </form>
                                                 </div>

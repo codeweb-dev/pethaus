@@ -513,10 +513,8 @@ if ($result) {
                                                         </div>
 
                                                         <div class="modal-footer">
-                                                            <button type="button" class="btn bg-black text-white"
-                                                                data-bs-dismiss="modal">Cancel</button>
-                                                            <button type="submit" class="btn bg-black text-white">Add to
-                                                                Cart</button>
+                                                            <button type="button" class="btn text-black" style="background-color: #ABD29B;" data-bs-dismiss="modal">Cancel</button>
+                                                            <button type="submit" class="btn text-black" style="background-color: #FFD531;">Add to Cart</button>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -597,10 +595,8 @@ if ($result) {
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Cancel</button>
-                                                            <button type="submit" class="btn bg-black text-white">Update
-                                                                Product</button>
+                                                            <button type="button" class="btn text-black" style="background-color: #ABD29B;" data-bs-dismiss="modal">Cancel</button>
+                                                            <button type="submit" class="btn text-black" style="background-color: #FFD531;">Update Product</button>
                                                         </div>
                                                     </form>
                                                 </div>

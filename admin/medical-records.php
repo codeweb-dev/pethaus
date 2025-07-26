@@ -588,7 +588,6 @@ if ($result) {
                                                 class="text-black"><i class="fa-solid fa-file-invoice-dollar"></i></a>
 
                                             <!-- <a href="edit_medical.php?id=<?php echo $rec['medical_record_id']; ?>" class="text-black"><i class="fa-solid fa-pen-to-square"></i></a> -->
-                                            <i class="fa-solid fa-x"></i>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

@@ -305,7 +305,7 @@ if ($result) {
                 </div>
 
                 <div class="modal-footer">
-                    <button type="submit" class="btn bg-black text-white">Submit Payment</button>
+                    <button type="submit" class="btn text-black" style="background-color: #FFD531;">Submit Payment</button>
                 </div>
             </form>
         </div>

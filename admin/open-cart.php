@@ -315,9 +315,9 @@ while ($row = mysqli_fetch_assoc($result)) {
                             </div>
 
                             <div class="modal-footer">
-                                <button class="btn bg-black text-white" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn text-black" style="background-color: #ABD29B;" data-bs-dismiss="modal">Close</button>
                                 <form action="../actions/place_order.php" method="POST" class="d-inline">
-                                    <button type="submit" class="btn bg-black text-white">Place Order & Print</button>
+                                    <button type="submit" class="btn text-black" style="background-color: #FFD531;">Place Order & Print</button>
                                 </form>
                             </div>
                         </div>
