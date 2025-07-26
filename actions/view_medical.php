@@ -35,7 +35,9 @@ $owner .= $data['middle_name'] ? $data['middle_name'][0] . '. ' : '';
 $owner .= $data['last_name'];
 
 $staff = $_SESSION['first_name'] ?? '';
-$staff .= isset($_SESSION['middle_name']) ? ' ' . $_SESSION['middle_name'][0] . '.' : '';
+$staff .= (isset($_SESSION['middle_name']) && $_SESSION['middle_name'] !== '')
+    ? ' ' . $_SESSION['middle_name'][0] . '.'
+    : '';
 $staff .= ' ' . ($_SESSION['last_name'] ?? '');
 
 $total = floatval($data['treatment_charge']) + floatval($data['prescription_charge']) + floatval($data['others_charge']);
@@ -49,7 +51,7 @@ $pdf->SetFont('Arial', 'B', 12);
 $pdf->Cell(0, 10, 'Medical Record Document', 0, 1, 'C');
 
 // Logo + Clinic Info
-$pdf->Image('../assets/images/pethaus_logo.png', 10, 20, 25);
+$pdf->Image('../assets/images/logo.jpg', 10, 7, 40);
 $pdf->SetXY(140, 20);
 $pdf->SetFont('Arial', 'B', 12);
 $pdf->Cell(0, 6, 'Pet Haus Animal Clinic & Supplies', 0, 1, 'R');
@@ -65,36 +67,44 @@ $pdf->Ln(15);
 
 // Pet and Owner Info
 $pdf->SetFont('Arial', '', 10);
-$pdf->Cell(40, 8, 'Pet Name:', 0);         $pdf->Cell(50, 8, $data['pet_name'], 0);
-$pdf->Cell(40, 8, 'Birthdate:', 0);        $pdf->Cell(60, 8, $data['birthdate'], 0, 1);
+$pdf->Cell(90, 6, 'Pet Name: ' . $data['pet_name'], 0);
+$pdf->Cell(90, 6, 'Birthdate: ' . $data['birthdate'], 0, 1);
 
-$pdf->Cell(40, 8, 'Breed:', 0);            $pdf->Cell(50, 8, $data['breed'], 0);
-$pdf->Cell(40, 8, 'Species:', 0);          $pdf->Cell(60, 8, $data['species'], 0, 1);
+$pdf->Cell(90, 6, 'Breed: ' . $data['breed'], 0);
+$pdf->Cell(90, 6, 'Species: ' . $data['species'], 0, 1);
 
-$pdf->Cell(40, 8, 'Color:', 0);            $pdf->Cell(50, 8, $data['color'], 0);
-$pdf->Cell(40, 8, 'Sex:', 0);              $pdf->Cell(60, 8, $data['sex'], 0, 1);
+$pdf->Cell(90, 6, 'Color: ' . $data['color'], 0);
+$pdf->Cell(90, 6, 'Sex: ' . $data['sex'], 0, 1);
 
-$pdf->Cell(40, 8, 'Markings:', 0);         $pdf->Cell(50, 8, $data['markings'], 0);
-$pdf->Cell(40, 8, 'Contact Info:', 0);     $pdf->Cell(60, 8, $data['mobile_number'], 0, 1);
+$pdf->Cell(90, 6, 'Markings: ' . $data['markings'], 0);
+$pdf->Cell(90, 6, 'Contact Info: ' . $data['mobile_number'], 0, 1);
 
-$pdf->Cell(40, 8, 'Pet Owner:', 0);        $pdf->Cell(50, 8, $owner, 0);
-$pdf->Cell(40, 8, 'Date Billed:', 0);      $pdf->Cell(60, 8, $data['date_started'], 0, 1);
+$pdf->Cell(90, 6, 'Pet Owner: ' . $owner, 0);
+$pdf->Cell(90, 6, 'Date Billed: ' . $data['date_started'], 0, 1);
 
-$pdf->Cell(40, 8, 'Staff:', 0);            $pdf->Cell(50, 8, $staff, 0);
-$pdf->Cell(40, 8, 'Bill No.:', 0);         $pdf->Cell(60, 8, '#' . str_pad($data['medical_record_id'], 5, '0', STR_PAD_LEFT), 0, 1);
+$pdf->Cell(90, 6, 'Staff: ' . $staff, 0);
+$pdf->Cell(90, 6, 'Bill No.: #' . str_pad($data['medical_record_id'], 5, '0', STR_PAD_LEFT), 0, 1);
 
 $pdf->Ln(5);
 
 // Summary
 $pdf->SetFont('Arial', 'B', 10);
-$pdf->Cell(60, 8, 'Type:', 1); $pdf->Cell(60, 8, 'Start Date:', 1); $pdf->Cell(70, 8, 'End Date:', 1, 1);
+$pdf->Cell(60, 8, 'Type:', 1);
+$pdf->Cell(60, 8, 'Start Date:', 1);
+$pdf->Cell(70, 8, 'End Date:', 1, 1);
 $pdf->SetFont('Arial', '', 10);
-$pdf->Cell(60, 8, $data['type'], 1); $pdf->Cell(60, 8, $data['date_started'], 1); $pdf->Cell(70, 8, $data['date_ended'], 1, 1);
+$pdf->Cell(60, 8, $data['type'], 1);
+$pdf->Cell(60, 8, $data['date_started'], 1);
+$pdf->Cell(70, 8, $data['date_ended'], 1, 1);
 
 $pdf->SetFont('Arial', 'B', 10);
-$pdf->Cell(60, 8, 'Description:', 1); $pdf->Cell(60, 8, 'Weight:', 1); $pdf->Cell(70, 8, 'Temperature:', 1, 1);
+$pdf->Cell(60, 8, 'Description:', 1);
+$pdf->Cell(60, 8, 'Weight:', 1);
+$pdf->Cell(70, 8, 'Temperature:', 1, 1);
 $pdf->SetFont('Arial', '', 10);
-$pdf->Cell(60, 8, $data['description'], 1); $pdf->Cell(60, 8, $data['weight'], 1); $pdf->Cell(70, 8, $data['temperature'] . ' °C', 1, 1);
+$pdf->Cell(60, 8, $data['description'], 1);
+$pdf->Cell(60, 8, $data['weight'], 1);
+$pdf->Cell(70, 8, $data['temperature'] . ' °C', 1, 1);
 
 $pdf->SetFont('Arial', 'B', 10);
 $pdf->Cell(190, 8, 'Complaint:', 1, 1);
@@ -113,7 +123,8 @@ $pdf->Cell(30, 8, 'Remarks', 1);
 $pdf->Cell(30, 8, 'Charge', 1, 1);
 
 // Custom row handler
-function renderMultiRow($pdf, $row) {
+function renderMultiRow($pdf, $row)
+{
     $lineHeight = 5;
 
     $w = [20, 25, 50, 35, 30, 30]; // Column widths

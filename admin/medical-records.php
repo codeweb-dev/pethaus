@@ -27,8 +27,11 @@ if ($result) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" href="../assets/images/pethaus_logo.png" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="../assets/style.css">
     <title>Medical Records</title>
@@ -69,13 +72,13 @@ if ($result) {
             color: #000;
         }
 
-        .sidebar.collapsed .custom-nav li a span {
-            display: none;
+        .sidebar .custom-nav li a:hover {
+            background-color: #296849;
+            color: white;
         }
 
-        .sidebar .custom-nav li a:hover {
-            background-color: black;
-            color: white;
+        .sidebar.collapsed .custom-nav li a span {
+            display: none;
         }
 
         .toggle-btn {
@@ -85,7 +88,7 @@ if ($result) {
             cursor: pointer;
             padding: 0.2rem 0.7rem;
             border-radius: 999px;
-            background-color: black;
+            background-color: #296849;
             color: white;
             z-index: 1000;
         }
@@ -183,25 +186,30 @@ if ($result) {
                         <div>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fa-solid fa-file-medical"></i></span>
-                                <input type="text" class="form-control" id="searchInput" placeholder="Search medical records...">
+                                <input type="text" class="form-control" id="searchInput"
+                                    placeholder="Search medical records...">
                             </div>
                         </div>
                     </div>
 
                     <div class="d-flex gap-2">
-                        <button class="btn bg-black text-white" onclick="location.reload();">
+                        <button class="btn text-black" style="background-color: #FFD531;" onclick="location.reload();">
                             <i class="fa-solid fa-arrows-rotate"></i> Refresh
                         </button>
-                        <button class="btn bg-black text-white" data-bs-toggle="modal" data-bs-target="#medicalRecordWizard">Add new record</button>
+                        <button class="btn text-black" style="background-color: #FFD531;" data-bs-toggle="modal"
+                            data-bs-target="#medicalRecordWizard">Add new record</button>
                     </div>
 
-                    <div class="modal fade" id="medicalRecordWizard" tabindex="-1" aria-labelledby="wizardLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal fade" id="medicalRecordWizard" tabindex="-1" aria-labelledby="wizardLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-xl modal-dialog-centered">
                             <div class="modal-content">
-                                <form id="medicalRecordForm" action="../actions/process_medical_record.php" method="POST">
+                                <form id="medicalRecordForm" action="../actions/process_medical_record.php"
+                                    method="POST">
                                     <div class="modal-header">
                                         <h5 class="modal-title fw-bold" id="wizardLabel">Create Medical Record</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
                                     </div>
 
                                     <div class="modal-body">
@@ -212,7 +220,8 @@ if ($result) {
                                                 <h5 class="mb-3">Step 1: Select Owner and Pet</h5>
                                                 <div class="mb-3">
                                                     <label class="form-label">Owner</label>
-                                                    <select name="owner_id" id="ownerSelect" class="form-select" required>
+                                                    <select name="owner_id" id="ownerSelect" class="form-select"
+                                                        required>
                                                         <option value="">Select Owner</option>
                                                         <?php
                                                         include('../conn.php'); // Adjust path to your DB connection
@@ -225,7 +234,8 @@ if ($result) {
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="form-label">Pet</label>
-                                                    <select name="pet_id" id="petSelect" class="form-select" required disabled>
+                                                    <select name="pet_id" id="petSelect" class="form-select" required
+                                                        disabled>
                                                         <option value="">Select Pet</option>
                                                     </select>
                                                 </div>
@@ -237,15 +247,75 @@ if ($result) {
                                                 <div class="row g-3">
                                                     <div class="col-md-6">
                                                         <label class="form-label">Type</label>
-                                                        <input type="text" class="form-control" name="type" required>
+                                                        <select class="form-control" name="type" required>
+                                                            <option value="" disabled selected>Select type
+                                                            </option>
+                                                            <!-- Vaccines -->
+                                                            <optgroup label="Vaccines - Dog">
+                                                                <option value="Rabies (Dog)">Rabies</option>
+                                                                <option value="5-in-1 (Dog)">5-in-1</option>
+                                                                <option value="6-in-1 (Dog)">6-in-1</option>
+                                                                <option value="8-in-1 (Dog)">8-in-1</option>
+                                                                <option value="9-in-1 (Dog)">9-in-1</option>
+                                                                <option value="Kennel Cough (Dog)">Kennel Cough</option>
+                                                            </optgroup>
+                                                            <optgroup label="Vaccines - Cat">
+                                                                <option value="Rabies (Cat)">Rabies (Cat)</option>
+                                                                <option value="3-in-1 (Cat)">3-in-1</option>
+                                                                <option value="4-in-1 (Cat)">4-in-1</option>
+                                                            </optgroup>
+                                                            <!-- Deworming -->
+                                                            <optgroup label="Deworming">
+                                                                <option value="Deworming">Deworming</option>
+                                                                <option value="Vaccination + Deworming">Vaccination +
+                                                                    Deworming</option>
+                                                            </optgroup>
+                                                            <!-- Consultation Packages -->
+                                                            <optgroup label="Consultation Packages">
+                                                                <option value="Check-up">Check-up</option>
+                                                                <option value="Check-up + Consultation">Check-up +
+                                                                    Consultation</option>
+                                                                <option value="Check-up + Consultation + Treatment">
+                                                                    Check-up + Consultation + Treatment</option>
+                                                                <option
+                                                                    value="Check-up + Consultation + Treatment + Confinement">
+                                                                    Check-up + Consultation + Treatment + Confinement
+                                                                </option>
+                                                                <option
+                                                                    value="Check-up + Consultation + Treatment + Laboratory">
+                                                                    Check-up + Consultation + Treatment + Laboratory
+                                                                </option>
+                                                                <option
+                                                                    value="Check-up + Consultation + Treatment + Confinement + Laboratory">
+                                                                    Check-up + Consultation + Treatment + Confinement +
+                                                                    Laboratory</option>
+                                                            </optgroup>
+                                                        </select>
                                                     </div>
+
+                                                    <!-- Attending Vet Dropdown with Fixed Options -->
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Attending Vet</label>
+                                                        <select class="form-control" name="attending_vet" required>
+                                                            <option value="" disabled selected>Select veterinarian
+                                                            </option>
+                                                            <option value="Dr. Dayanna N. Sipin">Dr. Dayanna N. Sipin
+                                                            </option>
+                                                            <option value="Dr. Kean Tiodanco">Dr. Kean Tiodanco</option>
+                                                            <option value="Dr. Marjorie S. Combrero">Dr. Marjorie S.
+                                                                Combrero</option>
+                                                        </select>
+                                                    </div>
+
                                                     <div class="col-md-6">
                                                         <label class="form-label">Start Date</label>
-                                                        <input type="date" class="form-control" name="date_started" required>
+                                                        <input type="date" class="form-control" name="date_started"
+                                                            required>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label class="form-label">End Date</label>
-                                                        <input type="date" class="form-control" name="date_ended" required>
+                                                        <input type="date" class="form-control" name="date_ended"
+                                                            required>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label class="form-label">Weight</label>
@@ -253,46 +323,107 @@ if ($result) {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label class="form-label">Temperature (°C)</label>
-                                                        <input type="text" class="form-control" name="temperature" required>
+                                                        <input type="text" class="form-control" name="temperature"
+                                                            required>
                                                     </div>
                                                     <div class="col-md-12">
-                                                        <label class="form-label">Complaint</label>
-                                                        <textarea class="form-control" name="complaint" rows="2" required></textarea>
+                                                        <label class="form-label">Complaint/History</label>
+                                                        <textarea class="form-control" name="complaint" rows="2"
+                                                            required></textarea>
                                                     </div>
                                                     <div class="col-md-12">
-                                                        <label class="form-label">Description</label>
-                                                        <textarea class="form-control" name="description" rows="2" required></textarea>
+                                                        <label class="form-label">Tentative Diagnosis</label>
+                                                        <textarea class="form-control" name="description" rows="2"
+                                                            required></textarea>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <!-- Step 3: Treatment -->
-                                            <div class="wizard-step d-none" data-step="3">
+                                            <div class="wizard-step d-none" data-step="3" style="padding-left: 0;">
                                                 <h5 class="mb-3">Step 3: Treatment</h5>
 
-                                                <button type="button" class="btn bg-black text-white mb-3" id="addTreatmentBtn">+ Add Treatment</button>
+                                                <button type="button" class="btn bg-black text-white mb-3 ms-0"
+                                                    id="addTreatmentBtn">
+                                                    + Add Treatment
+                                                </button>
 
                                                 <div id="treatmentForm" class="d-none">
-                                                    <div class="row g-2 mb-2">
-                                                        <div class="col-md-3">
+                                                    <div class="row g-2 mb-2 ms-0">
+                                                        <div class="col-md-2">
                                                             <label class="form-label">Date</label>
-                                                            <input type="date" name="treatment_date" class="form-control">
+                                                            <input type="date" name="treatment_date"
+                                                                class="form-control">
                                                         </div>
+
                                                         <div class="col-md-3">
-                                                            <label class="form-label">Name</label>
-                                                            <input type="text" name="treatment_name" class="form-control">
+                                                            <label class="form-label">Case</label>
+                                                            <input type="text" name="treatment_name"
+                                                                class="form-control">
                                                         </div>
-                                                        <div class="col-md-3">
+
+                                                        <div class="col-md-2">
                                                             <label class="form-label">Test</label>
-                                                            <input type="text" name="treatment_test" class="form-control">
+                                                            <select class="form-control" name="treatment_tests"
+                                                                style="height: auto; max-height: 200px; overflow-y: auto;">
+                                                                <option value="" disabled selected>Select Test</option>
+
+                                                                <!-- Diagnostic Tests -->
+                                                                <optgroup label="Diagnostic Tests">
+                                                                    <option value="4DX">4DX</option>
+                                                                    <option value="3DX">3DX</option>
+                                                                    <option value="5DX">5DX</option>
+                                                                    <option value="CBC">CBC</option>
+                                                                    <option value="CDV">CDV</option>
+                                                                    <option value="CPV">CPV</option>
+                                                                    <option value="BLOOD CHEM">BLOOD CHEM</option>
+                                                                    <option value="LEPTO TEST">LEPTO TEST</option>
+                                                                    <option value="PARVO">PARVO</option>
+                                                                    <option value="DISTEMPER">DISTEMPER</option>
+                                                                </optgroup>
+
+                                                                <!-- Imaging -->
+                                                                <optgroup label="Imaging">
+                                                                    <option value="ULTRASOUND">ULTRASOUND</option>
+                                                                    <option value="X-RAY">X-RAY</option>
+                                                                </optgroup>
+
+                                                                <!-- Laboratory Tests -->
+                                                                <optgroup label="Laboratory Tests">
+                                                                    <option value="FECALYSIS">FECALYSIS</option>
+                                                                    <option value="SKIN SCRAPPING">SKIN SCRAPPING
+                                                                    </option>
+                                                                    <option value="BLOOD SMEAR">BLOOD SMEAR</option>
+                                                                </optgroup>
+
+                                                                <!-- Procedures -->
+                                                                <optgroup label="Procedures">
+                                                                    <option value="CEAZARIAN">CEAZARIAN</option>
+                                                                    <option value="DENTAL CLEANING">DENTAL CLEANING
+                                                                    </option>
+                                                                    <option value="EAR CLEANING">EAR CLEANING</option>
+                                                                    <option value="WOUND CLEANING">WOUND CLEANING
+                                                                    </option>
+                                                                    <option value="SEDATION">SEDATION</option>
+                                                                    <option value="OTOSCOPE">OTOSCOPE</option>
+                                                                    <option value="WOUND LAMP">WOUND LAMP</option>
+                                                                </optgroup>
+
+                                                                <!-- Other Services -->
+                                                                <optgroup label="Other Services">
+                                                                    <option value="GROOMING">GROOMING</option>
+                                                                </optgroup>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <label class="form-label">Charge (₱)</label>
+                                                            <input type="number" step="0.01" name="treatment_charge"
+                                                                class="form-control">
                                                         </div>
                                                         <div class="col-md-3">
                                                             <label class="form-label">Remarks</label>
-                                                            <input type="text" name="treatment_remarks" class="form-control">
-                                                        </div>
-                                                        <div class="col-md-3 mt-2">
-                                                            <label class="form-label">Charge (₱)</label>
-                                                            <input type="number" step="0.01" name="treatment_charge" class="form-control">
+                                                            <textarea class="form-control"
+                                                                name="treatment_remarks"></textarea>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -302,29 +433,41 @@ if ($result) {
                                             <div class="wizard-step d-none" data-step="4">
                                                 <h5 class="mb-3">Step 4: Prescription</h5>
 
-                                                <button type="button" class="btn bg-black text-white mb-3" id="addPrescriptionBtn">+ Add Prescription</button>
+                                                <button type="button" class="btn bg-black text-white mb-3"
+                                                    id="addPrescriptionBtn">+ Add Prescription</button>
 
                                                 <div id="prescriptionForm" class="d-none">
                                                     <div class="row g-2 mb-2">
-                                                        <div class="col-md-3">
+                                                        <div class="col-md-2">
                                                             <label class="form-label">Date</label>
-                                                            <input type="date" name="prescription_date" class="form-control">
+                                                            <input type="date" name="prescription_date"
+                                                                class="form-control">
                                                         </div>
                                                         <div class="col-md-3">
-                                                            <label class="form-label">Name</label>
-                                                            <input type="text" name="prescription_name" class="form-control">
+                                                            <label class="form-label">Medication</label>
+                                                            <input type="text" name="prescription_name"
+                                                                class="form-control">
                                                         </div>
                                                         <div class="col-md-3">
-                                                            <label class="form-label">Description</label>
-                                                            <input type="text" name="prescription_description" class="form-control">
+                                                            <label class="form-label">Dose</label>
+                                                            <input type="text" name="prescription_description"
+                                                                class="form-control">
                                                         </div>
                                                         <div class="col-md-3">
-                                                            <label class="form-label">Remarks</label>
-                                                            <input type="text" name="prescription_remarks" class="form-control">
+                                                            <label class="form-label">Sig</label>
+                                                            <input type="text" name="prescription_description"
+                                                                class="form-control">
+                                                        </div>
+
+                                                        <div class="col-md-2 mt-2">
+                                                            <label class="form-label">Charge (₱)</label>
+                                                            <input type="number" step="0.01" name="prescription_charge"
+                                                                class="form-control">
                                                         </div>
                                                         <div class="col-md-3 mt-2">
-                                                            <label class="form-label">Charge (₱)</label>
-                                                            <input type="number" step="0.01" name="prescription_charge" class="form-control">
+                                                            <label class="form-label">Remarks</label>
+                                                            <input type="text" name="prescription_remarks"
+                                                                class="form-control">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -332,9 +475,10 @@ if ($result) {
 
                                             <!-- Step 5: Others -->
                                             <div class="wizard-step d-none" data-step="5">
-                                                <h5 class="mb-3">Step 5: Other Charges</h5>
+                                                <h5 class="mb-3">Step 5: Others</h5>
 
-                                                <button type="button" class="btn bg-black text-white mb-3" id="addOthersBtn">+ Add Other</button>
+                                                <button type="button" class="btn bg-black text-white mb-3"
+                                                    id="addOthersBtn">+ Add Other</button>
 
                                                 <div id="othersForm" class="d-none">
                                                     <div class="row g-2 mb-2">
@@ -348,15 +492,20 @@ if ($result) {
                                                         </div>
                                                         <div class="col-md-2">
                                                             <label class="form-label">Quantity</label>
-                                                            <input type="text" name="others_quantity" class="form-control">
+                                                            <input type="text" name="others_quantity"
+                                                                class="form-control">
                                                         </div>
-                                                        <div class="col-md-2">
-                                                            <label class="form-label">Remarks</label>
-                                                            <input type="text" name="others_remarks" class="form-control">
-                                                        </div>
+
                                                         <div class="col-md-2 mt-2">
                                                             <label class="form-label">Charge (₱)</label>
-                                                            <input type="number" step="0.01" name="others_charge" class="form-control">
+                                                            <input type="number" step="0.01" name="others_charge"
+                                                                class="form-control">
+                                                        </div>
+
+                                                        <div class="col-md-2">
+                                                            <label class="form-label">Remarks</label>
+                                                            <input type="text" name="others_remarks"
+                                                                class="form-control">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -365,21 +514,28 @@ if ($result) {
                                     </div>
 
                                     <div class="modal-footer flex-column gap-2">
-                                        <div class="form-check d-flex justify-content-start gap-3 mb-2">
+                                        <div class="form-check d-flex justify-content-end gap-3 mb-2 w-100">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="create_bill" id="createBillCheckbox" value="1">
-                                                <label class="form-check-label" for="createBillCheckbox">Create Bill</label>
+                                                <input class="form-check-input" type="checkbox" name="create_bill"
+                                                    id="createBillCheckbox" value="1">
+                                                <label class="form-check-label" for="createBillCheckbox">Create
+                                                    Bill</label>
                                             </div>
 
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="print_bill" id="printBillCheckbox" value="1">
-                                                <label class="form-check-label" for="printBillCheckbox">Print Bill after submission</label>
+                                                <input class="form-check-input" type="checkbox" name="print_bill"
+                                                    id="printBillCheckbox" value="1">
+                                                <label class="form-check-label" for="printBillCheckbox">Print Bill
+                                                    after
+                                                    submission</label>
                                             </div>
                                         </div>
 
                                         <div class="d-flex justify-content-between w-100">
-                                            <button type="button" class="btn bg-black text-white" id="prevBtn" disabled>Back</button>
-                                            <button type="button" class="btn bg-black text-white" id="nextBtn">Next</button>
+                                            <button type="button" class="btn bg-black text-white" id="prevBtn"
+                                                disabled>Back</button>
+                                            <button type="button" class="btn bg-black text-white"
+                                                id="nextBtn">Next</button>
                                         </div>
                                     </div>
                                 </form>
@@ -396,17 +552,18 @@ if ($result) {
                                 <th scope="col">TYPE</th>
                                 <th scope="col">START DATE</th>
                                 <th scope="col">END DATE</th>
-                                <th scope="col">DESCRIPTION</th>
+                                <th scope="col">TENTIVE DIAGNOSIS</th>
                                 <th scope="col">WEIGHT</th>
                                 <th scope="col">TEMPERATURE</th>
-                                <th scope="col">PET</th>
-                                <th scope="col">OWNER</th>
+                                <th scope="col">PET NAME</th>
+                                <th scope="col">PET OWNER</th>
+                                <!--<th scope="col">ATTENDING VET</th>-->
                                 <th scope="col">ACTION</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if (!empty($records)) : ?>
-                                <?php foreach ($records as $rec) : ?>
+                            <?php if (!empty($records)): ?>
+                                <?php foreach ($records as $rec): ?>
                                     <tr>
                                         <td class="p-3"><?php echo $rec['medical_record_id']; ?></td>
                                         <td class="p-3"><?php echo $rec['type']; ?></td>
@@ -424,16 +581,18 @@ if ($result) {
                                             ?>
                                         </td>
                                         <td class="p-3 d-flex alignt-items-center gap-3">
-                                            <a href="../actions/view_bill.php?record_id=<?php echo $rec['medical_record_id']; ?>" class="text-black"><i class="fa-solid fa-file-medical"></i></a>
+                                            <a href="../actions/view_bill.php?record_id=<?php echo $rec['medical_record_id']; ?>"
+                                                class="text-black"><i class="fa-solid fa-file-medical"></i></a>
 
-                                            <a href="../actions/view_medical.php?id=<?php echo $rec['medical_record_id']; ?>" class="text-black"><i class="fa-solid fa-file-invoice-dollar"></i></a>
+                                            <a href="../actions/view_medical.php?id=<?php echo $rec['medical_record_id']; ?>"
+                                                class="text-black"><i class="fa-solid fa-file-invoice-dollar"></i></a>
 
                                             <!-- <a href="edit_medical.php?id=<?php echo $rec['medical_record_id']; ?>" class="text-black"><i class="fa-solid fa-pen-to-square"></i></a> -->
                                             <i class="fa-solid fa-x"></i>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
-                            <?php else : ?>
+                            <?php else: ?>
                                 <tr>
                                     <td colspan="10" class="text-center">No medical records found.</td>
                                 </tr>

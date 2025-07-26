@@ -101,13 +101,13 @@ $currentServing = $conn->query("SELECT * FROM pet_queue WHERE status='In Service
             color: #000;
         }
 
-        .sidebar.collapsed .custom-nav li a span {
-            display: none;
+        .sidebar .custom-nav li a:hover {
+            background-color: #296849;
+            color: white;
         }
 
-        .sidebar .custom-nav li a:hover {
-            background-color: black;
-            color: white;
+        .sidebar.collapsed .custom-nav li a span {
+            display: none;
         }
 
         .toggle-btn {
@@ -117,7 +117,7 @@ $currentServing = $conn->query("SELECT * FROM pet_queue WHERE status='In Service
             cursor: pointer;
             padding: 0.2rem 0.7rem;
             border-radius: 999px;
-            background-color: black;
+            background-color: #296849;
             color: white;
             z-index: 1000;
         }
@@ -214,7 +214,7 @@ $currentServing = $conn->query("SELECT * FROM pet_queue WHERE status='In Service
                 <h3 class="fw-bold mb-4">Pet Queue</h3>
 
                 <div class="mb-4 text-end">
-                    <button class="btn bg-black text-white" data-bs-toggle="modal" data-bs-target="#registrationModal">
+                    <button class="btn text-black" style="background-color: #FFD531;" data-bs-toggle="modal" data-bs-target="#registrationModal">
                         <i class="fa-solid fa-plus"></i> Register Pet to Queue
                     </button>
                 </div>
@@ -258,7 +258,7 @@ $currentServing = $conn->query("SELECT * FROM pet_queue WHERE status='In Service
 
                 <!-- MANAGE QUEUE -->
                 <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-dark text-white fw-bold">Manage Queue</div>
+                    <div class="card-header bg-white text-black fw-bold">Manage Queue</div>
                     <div class="card-body table-responsive">
                         <table class="table table-bordered table-hover align-middle">
                             <thead class="table-secondary">
@@ -310,7 +310,7 @@ $currentServing = $conn->query("SELECT * FROM pet_queue WHERE status='In Service
 
                 <!-- DISPLAY QUEUE -->
                 <div class="card shadow-sm">
-                    <div class="card-header bg-dark text-white fw-bold">Display Queue</div>
+                    <div class="card-header bg-white text-black fw-bold">Display Queue</div>
                     <div class="card-body">
                         <h4 class="text-primary mb-4">Currently Serving:
                             <span class="fw-bold text-dark">

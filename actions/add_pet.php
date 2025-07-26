@@ -119,7 +119,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bind_param("isssssssss", $owner_id, $name, $species, $breed, $color, $sex, $birthdate, $image_path, $age, $markings);
 
     if ($stmt->execute()) {
+        $inserted_id = $stmt->insert_id;
         $stmt->close();
+
+        // Format the pet_code like 0001, 0002, etc.
+        $pet_code = str_pad($inserted_id, 4, '0', STR_PAD_LEFT);
+
+        // Update the pet_code in the record
+        $update_stmt = $conn->prepare("UPDATE pet_records SET pet_code = ? WHERE pet_id = ?");
+        $update_stmt->bind_param("si", $pet_code, $inserted_id);
+        $update_stmt->execute();
+        $update_stmt->close();
+
         $_SESSION['success'] = "Successfully added new pet.";
         header("Location: ../admin/pet-records.php?success=Successfully added new pet.");
         exit();

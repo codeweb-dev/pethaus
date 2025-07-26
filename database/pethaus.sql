@@ -32,6 +32,7 @@ CREATE TABLE `pet_owner_records` (
 
 CREATE TABLE `pet_records` (
   `pet_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `pet_code` VARCHAR(10) UNIQUE NOT NULL,
   `owner_id` INT NOT NULL,
   `name` VARCHAR(255) NOT NULL,
   `species` VARCHAR(255) NOT NULL,
@@ -47,6 +48,7 @@ CREATE TABLE `pet_records` (
 
 CREATE TABLE `products` (
   `product_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `product_code` VARCHAR(10) UNIQUE NOT NULL,
   `name` VARCHAR(255) NOT NULL,
   `description` VARCHAR(500),
   `price` DECIMAL(10,2) NOT NULL,

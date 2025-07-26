@@ -63,7 +63,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bind_param("ssdssis", $name, $description, $price, $unit_of_measure, $category, $quantity, $stock);
 
     if ($stmt->execute()) {
+        $inserted_id = $stmt->insert_id;
         $stmt->close();
+
+        // Generate product code like 0001, 0002
+        $product_code = str_pad($inserted_id, 4, '0', STR_PAD_LEFT);
+
+        // Update product_code for that product
+        $update_stmt = $conn->prepare("UPDATE products SET product_code = ? WHERE product_id = ?");
+        $update_stmt->bind_param("si", $product_code, $inserted_id);
+        $update_stmt->execute();
+        $update_stmt->close();
+
         $_SESSION['success'] = "Successfully added new product.";
         header("Location: ../admin/product-inventory.php?success=Successfully added new product.");
         exit();

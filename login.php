@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div class="container-fluid p-0 min-vh-100">
         <div class="d-flex flex-column flex-md-row w-100 h-100">
-            <div class="d-none d-md-flex flex-md-column justify-content-center align-items-center bg-black text-white col-md-6 p-4">
+            <div class="d-none d-md-flex flex-md-column justify-content-center align-items-center text-white col-md-6 p-4" style="background-color: #296849;">
                 <div class="text-center">
                     <img src="assets/images/pethaus_logo.png" alt="PetHaus Logo" class="mb-4" style="width: 150px;">
                     <h2 class="fw-bold">PetHaus Animal Clinic and Supplies</h2>
@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         <?php include('components/toast.php'); ?>
 
-                        <button type="submit" class="btn bg-black text-white w-100">LOGIN</button>
+                        <button type="submit" class="btn text-black w-100" style="background-color: #FFD531;">LOGIN</button>
                     </form>
                 </div>
             </div>

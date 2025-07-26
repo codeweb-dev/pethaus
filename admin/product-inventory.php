@@ -8,7 +8,7 @@ $old = $_SESSION['old'] ?? [];
 unset($_SESSION['form_errors'], $_SESSION['old']);
 
 $limit = 10;
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
 $page = max($page, 1);
 $offset = ($page - 1) * $limit;
 
@@ -63,8 +63,11 @@ if ($result) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" href="../assets/images/pethaus_logo.png" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="../assets/style.css">
     <title>Product Inventory</title>
@@ -105,13 +108,13 @@ if ($result) {
             color: #000;
         }
 
-        .sidebar.collapsed .custom-nav li a span {
-            display: none;
+        .sidebar .custom-nav li a:hover {
+            background-color: #296849;
+            color: white;
         }
 
-        .sidebar .custom-nav li a:hover {
-            background-color: black;
-            color: white;
+        .sidebar.collapsed .custom-nav li a span {
+            display: none;
         }
 
         .toggle-btn {
@@ -121,7 +124,7 @@ if ($result) {
             cursor: pointer;
             padding: 0.2rem 0.7rem;
             border-radius: 999px;
-            background-color: black;
+            background-color: #296849;
             color: white;
             z-index: 1000;
         }
@@ -135,6 +138,27 @@ if ($result) {
             transition: margin-left 0.3s;
             padding: 2rem;
             background: #f8f9fa;
+        }
+
+        .stock {
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .stock-out {
+            background-color: #ffcccc;
+            color: #891723ff;
+        }
+
+        .stock-low {
+            background-color: #fff3cd;
+            color: #cfa219ff;
+        }
+
+        .stock-good {
+            background-color: #d4edda;
+            color: #1eb140ff;
         }
     </style>
 </head>
@@ -219,14 +243,17 @@ if ($result) {
                         <div>
                             <div class="input-group">
                                 <span class="input-group-text "><i class="fa-solid fa-boxes-stacked"></i></span>
-                                <input type="text" class="form-control" id="searchInput" placeholder="Search for products...">
+                                <input type="text" class="form-control" id="searchInput"
+                                    placeholder="Search for products...">
                             </div>
                         </div>
                         <div class="d-flex flex-wrap gap-2 align-items-center">
                             <form class="d-flex gap-2" method="GET">
                                 <select name="category" class="form-select w-25">
-                                    <option value="" <?php echo empty($categoryFilter) ? 'selected' : ''; ?>>All Categories</option>
-                                    <option value="Veterinary Medicines & Treatments" <?php echo ($categoryFilter == "Veterinary Medicines & Treatments") ? 'selected' : ''; ?>>Veterinary Medicines & Treatments</option>
+                                    <option value="" <?php echo empty($categoryFilter) ? 'selected' : ''; ?>>All
+                                        Categories</option>
+                                    <option value="Veterinary Medicines & Treatments" <?php echo ($categoryFilter == "Veterinary Medicines & Treatments") ? 'selected' : ''; ?>>
+                                        Veterinary Medicines & Treatments</option>
                                     <option value="Pet Food & Treats" <?php echo ($categoryFilter == "Pet Food & Treats") ? 'selected' : ''; ?>>Pet Food & Treats</option>
                                     <option value="Pet Accessories" <?php echo ($categoryFilter == "Pet Accessories") ? 'selected' : ''; ?>>Pet Accessories</option>
                                     <option value="Pet Housing & Bedding" <?php echo ($categoryFilter == "Pet Housing & Bedding") ? 'selected' : ''; ?>>Pet Housing & Bedding</option>
@@ -236,13 +263,14 @@ if ($result) {
                                 </select>
 
                                 <select name="stock" class="form-select w-25">
-                                    <option value="" <?php echo empty($_GET['stock']) ? 'selected' : ''; ?>>All Stock Status</option>
+                                    <option value="" <?php echo empty($_GET['stock']) ? 'selected' : ''; ?>>All Stock
+                                        Status</option>
                                     <option value="In Stock" <?php echo (isset($_GET['stock']) && $_GET['stock'] == "In Stock") ? 'selected' : ''; ?>>In Stock</option>
                                     <option value="Low Stock" <?php echo (isset($_GET['stock']) && $_GET['stock'] == "Low Stock") ? 'selected' : ''; ?>>Low Stock</option>
                                     <option value="Out of Stock" <?php echo (isset($_GET['stock']) && $_GET['stock'] == "Out of Stock") ? 'selected' : ''; ?>>Out of Stock</option>
                                 </select>
 
-                                <button type="submit" class="btn bg-black text-white">
+                                <button type="submit" class="btn text-black" style="background-color: #FFD531;">
                                     <i class="fa-solid fa-filter"></i> Filter
                                 </button>
                                 <?php if (!empty($_GET['category']) || !empty($_GET['stock'])): ?>
@@ -255,31 +283,32 @@ if ($result) {
                     </div>
 
                     <div class="d-flex gap-2">
-                        <button class="btn bg-black text-white" onclick="location.reload();">
+                        <button class="btn text-black" style="background-color: #FFD531;" onclick="location.reload();">
                             <i class="fa-solid fa-arrows-rotate"></i> Refresh
                         </button>
 
-                        <button type="button" class="btn bg-black text-white" data-bs-toggle="modal" data-bs-target="#addProduct">
+                        <button type="button" class="btn text-black" style="background-color: #FFD531;" data-bs-toggle="modal"
+                            data-bs-target="#addProduct">
                             <i class="fa-solid fa-plus"></i> Add new product
                         </button>
 
-                        <div class="modal fade" id="addProduct" tabindex="-1" aria-labelledby="addProductLabel" aria-hidden="true">
+                        <div class="modal fade" id="addProduct" tabindex="-1" aria-labelledby="addProductLabel"
+                            aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <form method="POST" action="../actions/add_product.php" novalidate>
                                         <div class="modal-header">
-                                            <h1 class="modal-title fs-5 fw-bold" id="addNewStaffLabel">Add new product</h1>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <h1 class="modal-title fs-5 fw-bold" id="addNewStaffLabel">Add new product
+                                            </h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
                                             <div class="mb-3">
-                                                <label for="name" class="form-label">Name</label>
-                                                <input
-                                                    type="text"
+                                                <label for="name" class="form-label">Product Name</label>
+                                                <input type="text"
                                                     class="form-control <?php echo isset($form_errors['name']) ? 'is-invalid' : ''; ?>"
-                                                    placeholder="Enter product name"
-                                                    name="name"
-                                                    id="name"
+                                                    placeholder="Enter product name" name="name" id="name"
                                                     value="<?php echo htmlspecialchars($old['name'] ?? ''); ?>">
                                                 <div class="invalid-feedback">
                                                     <?php echo $form_errors['name'] ?? ''; ?>
@@ -287,14 +316,12 @@ if ($result) {
                                             </div>
 
                                             <div class="mb-3">
-                                                <label for="description" class="form-label">Description</label>
+                                                <label for="description" class="form-label">Product Description</label>
                                                 <div class="input-group">
                                                     <textarea
                                                         class="form-control <?php echo isset($form_errors['description']) ? 'is-invalid' : ''; ?>"
-                                                        id="description"
-                                                        placeholder="Enter product description"
-                                                        name="description"
-                                                        rows="3"
+                                                        id="description" placeholder="Enter product description"
+                                                        name="description" rows="3"
                                                         required><?php echo htmlspecialchars($old['description'] ?? ''); ?></textarea>
                                                     <div class="invalid-feedback">
                                                         <?php echo $form_errors['description'] ?? ''; ?>
@@ -304,14 +331,10 @@ if ($result) {
 
                                             <div class="mb-3">
                                                 <label for="price" class="form-label">Price</label>
-                                                <input
-                                                    type="number"
+                                                <input type="number"
                                                     class="form-control <?php echo isset($form_errors['price']) ? 'is-invalid' : ''; ?>"
-                                                    placeholder="Enter product price"
-                                                    name="price"
-                                                    id="price"
-                                                    step="0.01"
-                                                    min="0"
+                                                    placeholder="Enter product price" name="price" id="price"
+                                                    step="0.01" min="0"
                                                     value="<?php echo htmlspecialchars($old['price'] ?? ''); ?>"
                                                     required>
                                                 <div class="invalid-feedback">
@@ -321,11 +344,9 @@ if ($result) {
 
                                             <div class="mb-3">
                                                 <label for="unit_of_measure" class="form-label">Unit of measure</label>
-                                                <input
-                                                    type="text"
+                                                <input type="text"
                                                     class="form-control <?php echo isset($form_errors['unit_of_measure']) ? 'is-invalid' : ''; ?>"
-                                                    placeholder="Enter product unit measure"
-                                                    name="unit_of_measure"
+                                                    placeholder="Enter product unit measure" name="unit_of_measure"
                                                     id="unit_of_measure"
                                                     value="<?php echo htmlspecialchars($old['unit_of_measure'] ?? ''); ?>"
                                                     required>
@@ -335,20 +356,22 @@ if ($result) {
                                             </div>
 
                                             <div class="mb-3">
-                                                <label for="category" class="form-label">Category</label>
+                                                <label for="category" class="form-label">Product Category</label>
                                                 <select
                                                     class="form-control <?php echo isset($form_errors['category']) ? 'is-invalid' : ''; ?>"
-                                                    name="category"
-                                                    id="category"
-                                                    required>
+                                                    name="category" id="category" required>
                                                     <option value="" disabled <?php echo empty($old['category']) ? 'selected' : ''; ?>>Select product category</option>
-                                                    <option value="Veterinary Medicines & Treatments" <?php echo (isset($old['category']) && $old['category'] == 'Veterinary Medicines & Treatments') ? 'selected' : ''; ?>>Veterinary Medicines & Treatments</option>
+                                                    <option value="Veterinary Medicines & Treatments" <?php echo (isset($old['category']) && $old['category'] == 'Veterinary Medicines & Treatments') ? 'selected' : ''; ?>>Veterinary
+                                                        Medicines & Treatments</option>
                                                     <option value="Pet Food & Treats" <?php echo (isset($old['category']) && $old['category'] == 'Pet Food & Treats') ? 'selected' : ''; ?>>Pet Food & Treats</option>
-                                                    <option value="Pet Accessories" <?php echo (isset($old['category']) && $old['category'] == 'Pet Accessories') ? 'selected' : ''; ?>>Pet Accessories</option>
+                                                    <option value="Pet Accessories" <?php echo (isset($old['category']) && $old['category'] == 'Pet Accessories') ? 'selected' : ''; ?>>
+                                                        Pet Accessories</option>
                                                     <option value="Pet Housing & Bedding" <?php echo (isset($old['category']) && $old['category'] == 'Pet Housing & Bedding') ? 'selected' : ''; ?>>Pet Housing & Bedding</option>
                                                     <option value="Grooming Supplies" <?php echo (isset($old['category']) && $old['category'] == 'Grooming Supplies') ? 'selected' : ''; ?>>Grooming Supplies</option>
-                                                    <option value="Cleaning & Sanitation" <?php echo (isset($old['category']) && $old['category'] == 'Cleaning & Sanitation') ? 'selected' : ''; ?>>Cleaning & Sanitation</option>
-                                                    <option value="Pet Toys & Enrichment" <?php echo (isset($old['category']) && $old['category'] == 'Pet Toys & Enrichment') ? 'selected' : ''; ?>>Pet Toys & Enrichment</option>
+                                                    <option value="Cleaning & Sanitation" <?php echo (isset($old['category']) && $old['category'] == 'Cleaning & Sanitation') ? 'selected' : ''; ?>>Cleaning & Sanitation
+                                                    </option>
+                                                    <option value="Pet Toys & Enrichment" <?php echo (isset($old['category']) && $old['category'] == 'Pet Toys & Enrichment') ? 'selected' : ''; ?>>Pet Toys & Enrichment
+                                                    </option>
                                                 </select>
 
                                                 <div class="invalid-feedback">
@@ -358,12 +381,9 @@ if ($result) {
 
                                             <div class="mb-3">
                                                 <label for="quantity" class="form-label">Quantity</label>
-                                                <input
-                                                    type="number"
+                                                <input type="number"
                                                     class="form-control <?php echo isset($form_errors['quantity']) ? 'is-invalid' : ''; ?>"
-                                                    placeholder="Enter product quantity"
-                                                    name="quantity"
-                                                    id="quantity"
+                                                    placeholder="Enter product quantity" name="quantity" id="quantity"
                                                     min="0"
                                                     value="<?php echo htmlspecialchars($old['quantity'] ?? ''); ?>"
                                                     required>
@@ -373,12 +393,15 @@ if ($result) {
                                             </div>
 
                                             <?php if (isset($form_errors['general'])): ?>
-                                                <div class="alert alert-danger"><?php echo htmlspecialchars($form_errors['general']); ?></div>
+                                                <div class="alert alert-danger">
+                                                    <?php echo htmlspecialchars($form_errors['general']); ?></div>
                                             <?php endif; ?>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn bg-black text-white">Add new product</button>
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn bg-black text-white">Add new
+                                                product</button>
                                         </div>
                                     </form>
                                 </div>
@@ -392,11 +415,11 @@ if ($result) {
                         <thead>
                             <tr>
                                 <th class="p-3" scope="col">ID</th>
-                                <th class="p-3" scope="col">Name</th>
-                                <th class="p-3" scope="col">Description</th>
+                                <th class="p-3" scope="col">Product Name</th>
+                                <th class="p-3" scope="col">Product Description</th>
                                 <th class="p-3" scope="col">Price</th>
                                 <th class="p-3" scope="col">Unit of measure</th>
-                                <th class="p-3" scope="col">Category</th>
+                                <th class="p-3" scope="col">Product Category</th>
                                 <th class="p-3" scope="col">Quantity</th>
                                 <th class="p-3" scope="col">Stock</th>
                                 <th class="p-3" scope="col">Action</th>
@@ -405,62 +428,77 @@ if ($result) {
                         <tbody class="text-muted" id="staffTableBody">
                             <?php foreach ($products as $product): ?>
                                 <tr class="hover:bg-gray-100 border-b">
-                                    <td class="p-3"><?php echo $product['product_id']; ?></td>
+                                    <td class="p-3"><?php echo $product['product_code']; ?></td>
                                     <td class="p-3"><?php echo $product['name']; ?></td>
                                     <td class="p-3"><?php echo $product['description']; ?></td>
                                     <td class="p-3">₱<?php echo $product['price']; ?></td>
                                     <td class="p-3"><?php echo $product['unit_of_measure']; ?></td>
                                     <td class="p-3"><?php echo $product['category']; ?></td>
                                     <td class="p-3"><?php echo $product['quantity']; ?></td>
-                                    <td class="p-3"><?php echo $product['stock']; ?></td>
+                                    <td class="p-3">
+                                        <?php if ($product['stock'] === 'Out of Stock'): ?>
+                                            <span class="badge bg-danger"><?php echo $product['stock']; ?></span>
+                                        <?php elseif ($product['stock'] === 'Low Stock'): ?>
+                                            <span class="badge bg-warning text-dark"><?php echo $product['stock']; ?></span>
+                                        <?php else: ?>
+                                            <span class="badge bg-success"><?php echo $product['stock']; ?></span>
+                                        <?php endif; ?>
+                                    </td>
                                     <td class="p-3 d-flex align-items-center gap-3">
-                                        <i class="fa-solid fa-cart-shopping text-black" title="Add to Cart" style="cursor: pointer;"
-                                            data-bs-toggle="modal"
+                                        <i class="fa-solid fa-cart-shopping text-black" title="Add to Cart"
+                                            style="cursor: pointer;" data-bs-toggle="modal"
                                             data-bs-target="#addToCartModal<?php echo $product['product_id']; ?>"></i>
 
-                                        <div class="modal fade" id="addToCartModal<?php echo $product['product_id']; ?>" tabindex="-1" aria-hidden="true">
+                                        <div class="modal fade" id="addToCartModal<?php echo $product['product_id']; ?>"
+                                            tabindex="-1" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered">
                                                 <div class="modal-content">
                                                     <form method="POST" action="../actions/add_to_cart.php">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title">Add to Cart - <?php echo htmlspecialchars($product['name']); ?></h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            <h5 class="modal-title">Add to Cart -
+                                                                <?php echo htmlspecialchars($product['name']); ?></h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
+                                                            <input type="hidden" name="product_id"
+                                                                value="<?php echo $product['product_id']; ?>">
 
                                                             <div class="mb-3">
                                                                 <label class="form-label">Product Name</label>
-                                                                <input type="text" class="form-control" value="<?php echo htmlspecialchars($product['name']); ?>" readonly>
+                                                                <input type="text" class="form-control"
+                                                                    value="<?php echo htmlspecialchars($product['name']); ?>"
+                                                                    readonly>
                                                             </div>
 
                                                             <div class="mb-3">
                                                                 <label class="form-label">Available Quantity</label>
-                                                                <input type="number" class="form-control" value="<?php echo $product['quantity']; ?>" readonly>
+                                                                <input type="number" class="form-control"
+                                                                    value="<?php echo $product['quantity']; ?>" readonly>
                                                             </div>
 
                                                             <div class="mb-3">
                                                                 <label class="form-label">Original Price</label>
-                                                                <input type="text" class="form-control" id="price_<?php echo $product['product_id']; ?>" value="<?php echo $product['price']; ?>" readonly>
+                                                                <input type="text" class="form-control"
+                                                                    id="price_<?php echo $product['product_id']; ?>"
+                                                                    value="<?php echo $product['price']; ?>" readonly>
                                                             </div>
 
                                                             <div class="mb-3">
                                                                 <label class="form-label">Sell By (Unit of Measure)</label>
                                                                 <select name="unit_of_measure" class="form-select" required>
-                                                                    <option value="<?php echo $product['unit_of_measure']; ?>"><?php echo $product['unit_of_measure']; ?></option>
+                                                                    <option
+                                                                        value="<?php echo $product['unit_of_measure']; ?>">
+                                                                        <?php echo $product['unit_of_measure']; ?></option>
                                                                     <!-- Optional: You can offer more units if applicable -->
                                                                 </select>
                                                             </div>
 
                                                             <div class="mb-3">
                                                                 <label class="form-label">Sale Quantity</label>
-                                                                <input
-                                                                    type="number"
-                                                                    name="sale_quantity"
-                                                                    class="form-control"
-                                                                    min="1"
-                                                                    max="<?php echo $product['quantity']; ?>"
-                                                                    value="1"
+                                                                <input type="number" name="sale_quantity"
+                                                                    class="form-control" min="1"
+                                                                    max="<?php echo $product['quantity']; ?>" value="1"
                                                                     id="saleQty_<?php echo $product['product_id']; ?>"
                                                                     oninput="updateTotalPrice(<?php echo $product['product_id']; ?>)"
                                                                     required>
@@ -468,62 +506,80 @@ if ($result) {
 
                                                             <div class="mb-3">
                                                                 <label class="form-label">Actual Price Sold</label>
-                                                                <input
-                                                                    type="text"
-                                                                    name="actual_price"
-                                                                    class="form-control"
+                                                                <input type="text" name="actual_price" class="form-control"
                                                                     id="totalPrice_<?php echo $product['product_id']; ?>"
-                                                                    value="<?php echo $product['price']; ?>"
-                                                                    readonly>
+                                                                    value="<?php echo $product['price']; ?>" readonly>
                                                             </div>
                                                         </div>
 
                                                         <div class="modal-footer">
-                                                            <button type="button" class="btn bg-black text-white" data-bs-dismiss="modal">Cancel</button>
-                                                            <button type="submit" class="btn bg-black text-white">Add to Cart</button>
+                                                            <button type="button" class="btn bg-black text-white"
+                                                                data-bs-dismiss="modal">Cancel</button>
+                                                            <button type="submit" class="btn bg-black text-white">Add to
+                                                                Cart</button>
                                                         </div>
                                                     </form>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <i class="fa-solid fa-pen-to-square" title="edit pet" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#editProductModal<?php echo $product['product_id']; ?>"></i>
+                                        <i class="fa-solid fa-pen-to-square" title="edit pet" style="cursor: pointer;"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editProductModal<?php echo $product['product_id']; ?>"></i>
 
-                                        <div class="modal fade" id="editProductModal<?php echo $product['product_id']; ?>" tabindex="-1" aria-labelledby="editProductModalLabel<?php echo $product['product_id']; ?>" aria-hidden="true">
+                                        <div class="modal fade" id="editProductModal<?php echo $product['product_id']; ?>"
+                                            tabindex="-1"
+                                            aria-labelledby="editProductModalLabel<?php echo $product['product_id']; ?>"
+                                            aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered">
                                                 <div class="modal-content">
                                                     <form method="POST" action="../actions/update_product.php">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title">Edit Product: <?php echo htmlspecialchars($product['name']); ?></h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            <h5 class="modal-title">Edit Product:
+                                                                <?php echo htmlspecialchars($product['name']); ?></h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
+                                                            <input type="hidden" name="product_id"
+                                                                value="<?php echo $product['product_id']; ?>">
 
                                                             <div class="mb-3">
                                                                 <label for="name" class="form-label">Name</label>
-                                                                <input type="text" class="form-control" name="name" value="<?php echo htmlspecialchars($product['name']); ?>" required>
+                                                                <input type="text" class="form-control" name="name"
+                                                                    value="<?php echo htmlspecialchars($product['name']); ?>"
+                                                                    required>
                                                             </div>
 
                                                             <div class="mb-3">
-                                                                <label for="description" class="form-label">Description</label>
-                                                                <textarea class="form-control" name="description" rows="3" required><?php echo htmlspecialchars($product['description']); ?></textarea>
+                                                                <label for="description"
+                                                                    class="form-label">Description</label>
+                                                                <textarea class="form-control" name="description" rows="3"
+                                                                    required><?php echo htmlspecialchars($product['description']); ?></textarea>
                                                             </div>
 
                                                             <div class="mb-3">
                                                                 <label for="price" class="form-label">Price</label>
-                                                                <input type="number" step="0.01" class="form-control" name="price" value="<?php echo htmlspecialchars($product['price']); ?>" required>
+                                                                <input type="number" step="0.01" class="form-control"
+                                                                    name="price"
+                                                                    value="<?php echo htmlspecialchars($product['price']); ?>"
+                                                                    required>
                                                             </div>
 
                                                             <div class="mb-3">
-                                                                <label for="unit_of_measure" class="form-label">Unit of Measure</label>
-                                                                <input type="text" class="form-control" name="unit_of_measure" value="<?php echo htmlspecialchars($product['unit_of_measure']); ?>" required>
+                                                                <label for="unit_of_measure" class="form-label">Unit of
+                                                                    Measure</label>
+                                                                <input type="text" class="form-control"
+                                                                    name="unit_of_measure"
+                                                                    value="<?php echo htmlspecialchars($product['unit_of_measure']); ?>"
+                                                                    required>
                                                             </div>
 
                                                             <div class="mb-3">
                                                                 <label for="category" class="form-label">Category</label>
                                                                 <select class="form-control" name="category" required>
-                                                                    <option value="Veterinary Medicines & Treatments" <?php echo ($product['category'] == 'Veterinary Medicines & Treatments') ? 'selected' : ''; ?>>Veterinary Medicines & Treatments</option>
+                                                                    <option value="Veterinary Medicines & Treatments" <?php echo ($product['category'] == 'Veterinary Medicines & Treatments') ? 'selected' : ''; ?>>Veterinary
+                                                                        Medicines & Treatments</option>
                                                                     <option value="Pet Food & Treats" <?php echo ($product['category'] == 'Pet Food & Treats') ? 'selected' : ''; ?>>Pet Food & Treats</option>
                                                                     <option value="Pet Accessories" <?php echo ($product['category'] == 'Pet Accessories') ? 'selected' : ''; ?>>Pet Accessories</option>
                                                                     <option value="Pet Housing & Bedding" <?php echo ($product['category'] == 'Pet Housing & Bedding') ? 'selected' : ''; ?>>Pet Housing & Bedding</option>
@@ -535,18 +591,28 @@ if ($result) {
 
                                                             <div class="mb-3">
                                                                 <label for="quantity" class="form-label">Quantity</label>
-                                                                <input type="number" class="form-control" name="quantity" value="<?php echo htmlspecialchars($product['quantity']); ?>" required>
+                                                                <input type="number" class="form-control" name="quantity"
+                                                                    value="<?php echo htmlspecialchars($product['quantity']); ?>"
+                                                                    required>
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                            <button type="submit" class="btn bg-black text-white">Update Product</button>
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Cancel</button>
+                                                            <button type="submit" class="btn bg-black text-white">Update
+                                                                Product</button>
                                                         </div>
                                                     </form>
                                                 </div>
                                             </div>
                                         </div>
 
+                                        <form method="POST" action="../actions/delete_product.php" onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                            <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
+                                            <button type="submit" class="btn btn-sm" title="Delete Product">
+                                                <i class="fa-solid fa-trash-can"></i>
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -556,17 +622,20 @@ if ($result) {
 
                 <nav aria-label="Table page navigation">
                     <ul class="pagination justify-content-end">
-                        <li class="page-item <?php if ($page <= 1) echo 'disabled'; ?>">
+                        <li class="page-item <?php if ($page <= 1)
+                                                    echo 'disabled'; ?>">
                             <a class="page-link" href="?page=<?php echo max(1, $page - 1); ?>">Previous</a>
                         </li>
 
                         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                            <li class="page-item <?php if ($i == $page) echo 'active'; ?>">
+                            <li class="page-item <?php if ($i == $page)
+                                                        echo 'active'; ?>">
                                 <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
                             </li>
                         <?php endfor; ?>
 
-                        <li class="page-item <?php if ($page >= $totalPages) echo 'disabled'; ?>">
+                        <li class="page-item <?php if ($page >= $totalPages)
+                                                    echo 'disabled'; ?>">
                             <a class="page-link" href="?page=<?php echo min($totalPages, $page + 1); ?>">Next</a>
                         </li>
                     </ul>

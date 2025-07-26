@@ -38,14 +38,20 @@ $other_charge = floatval($data['others_charge']);
 $total = $treat_charge + $rx_charge + $other_charge;
 
 // Format owner name
-$owner = $data['first_name'] . ' ';
-$owner .= !empty($data['middle_name']) ? $data['middle_name'][0] . '. ' : '';
-$owner .= $data['last_name'];
+$owner = $data['first_name'];
+if (!empty($data['middle_name'])) {
+    $owner .= ' ' . $data['middle_name'][0] . '.';
+}
+$owner .= ' ' . $data['last_name'];
+$owner = trim($owner);
 
 // Prepared By (from session)
 $staff = $_SESSION['first_name'] ?? '';
-$staff .= isset($_SESSION['middle_name']) ? ' ' . $_SESSION['middle_name'][0] . '.' : '';
+if (!empty($_SESSION['middle_name'])) {
+    $staff .= ' ' . $_SESSION['middle_name'][0] . '.';
+}
 $staff .= ' ' . ($_SESSION['last_name'] ?? '');
+$staff = trim($staff);
 
 $pdf = new FPDF();
 $pdf->AddPage();
@@ -55,7 +61,7 @@ $pdf->SetFont('Arial', '', 12);
 $pdf->SetFont('Arial', 'B', 10);
 
 // Logo on left
-$pdf->Image('../assets/images/pethaus_logo.png', 10, 10, 25);
+$pdf->Image('../assets/images/logo.jpg', 10, 1, 40);
 
 // Right-align clinic details
 $pdf->SetFont('Arial', 'B', 12);

@@ -36,7 +36,6 @@ if ($salesTodayQuery && $salesTodayQuery->num_rows > 0) {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="../assets/style.css">
-
   <style>
     body {
       margin: 0;
@@ -75,7 +74,7 @@ if ($salesTodayQuery && $salesTodayQuery->num_rows > 0) {
     }
 
     .sidebar .custom-nav li a:hover {
-      background-color: black;
+      background-color: #296849;
       color: white;
     }
 
@@ -90,7 +89,7 @@ if ($salesTodayQuery && $salesTodayQuery->num_rows > 0) {
       cursor: pointer;
       padding: 0.2rem 0.7rem;
       border-radius: 999px;
-      background-color: black;
+      background-color: #296849;
       color: white;
       z-index: 1000;
     }
@@ -186,7 +185,7 @@ if ($salesTodayQuery && $salesTodayQuery->num_rows > 0) {
       <h6 class="text-muted mb-4">Welcome to PetHaus Animal Clinic Management System</h6>
       <div class="row">
         <div class="col-md-4 mb-4">
-          <div class="card text-white bg-black">
+          <div class="card text-white" style="background-color: #296849;">
             <div class="card-body">
               <p class="mb-2">Total Pets Registered</p>
               <h4 class="mb-0"><?= $totalPets ?></h4>
@@ -194,7 +193,7 @@ if ($salesTodayQuery && $salesTodayQuery->num_rows > 0) {
           </div>
         </div>
         <div class="col-md-4 mb-4">
-          <div class="card text-white bg-black">
+          <div class="card text-white" style="background-color: #296849;">
             <div class="card-body">
               <p class="mb-2">Total Pet Owners</p>
               <h4 class="mb-0"><?= $totalOwners ?></h4>
@@ -202,7 +201,7 @@ if ($salesTodayQuery && $salesTodayQuery->num_rows > 0) {
           </div>
         </div>
         <div class="col-md-4 mb-4">
-          <div class="card text-white bg-black">
+          <div class="card text-white" style="background-color: #296849;">
             <div class="card-body">
               <p class="mb-2">Total Sales Today</p>
               <h4 class="mb-0">₱<?= number_format($totalSalesToday, 2) ?></h4>

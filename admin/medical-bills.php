@@ -85,7 +85,7 @@ if ($result) {
         }
 
         .sidebar .custom-nav li a:hover {
-            background-color: black;
+            background-color: #296849;
             color: white;
         }
 
@@ -100,7 +100,7 @@ if ($result) {
             cursor: pointer;
             padding: 0.2rem 0.7rem;
             border-radius: 999px;
-            background-color: black;
+            background-color: #296849;
             color: white;
             z-index: 1000;
         }
@@ -204,7 +204,7 @@ if ($result) {
                     </div>
 
                     <div class="d-flex gap-2">
-                        <button class="btn bg-black text-white" onclick="location.reload();">
+                        <button class="btn text-black" style="background-color: #FFD531;" onclick="location.reload();">
                             <i class="fa-solid fa-arrows-rotate"></i> Refresh
                         </button>
                     </div>

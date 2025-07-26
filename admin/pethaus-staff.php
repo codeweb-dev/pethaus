@@ -78,13 +78,13 @@ if ($result) {
             color: #000;
         }
 
-        .sidebar.collapsed .custom-nav li a span {
-            display: none;
+        .sidebar .custom-nav li a:hover {
+            background-color: #296849;
+            color: white;
         }
 
-        .sidebar .custom-nav li a:hover {
-            background-color: black;
-            color: white;
+        .sidebar.collapsed .custom-nav li a span {
+            display: none;
         }
 
         .toggle-btn {
@@ -94,7 +94,7 @@ if ($result) {
             cursor: pointer;
             padding: 0.2rem 0.7rem;
             border-radius: 999px;
-            background-color: black;
+            background-color: #296849;
             color: white;
             z-index: 1000;
         }
@@ -198,11 +198,11 @@ if ($result) {
                     </div>
 
                     <div class="d-flex gap-2">
-                        <button class="btn bg-black text-white" onclick="location.reload();">
+                        <button class="btn text-black" style="background-color: #FFD531;" onclick="location.reload();">
                             <i class="fa-solid fa-arrows-rotate"></i> Refresh
                         </button>
 
-                        <button type="button" class="btn bg-black text-white" data-bs-toggle="modal" data-bs-target="#addNewStaff">
+                        <button type="button" class="btn text-black" style="background-color: #FFD531;" data-bs-toggle="modal" data-bs-target="#addNewStaff">
                             <i class="fa-solid fa-plus"></i> Add new staff
                         </button>
 
@@ -308,7 +308,7 @@ if ($result) {
                                     <td class="p-3"><?php echo $user['middle_name']; ?></td>
                                     <td class="p-3"><?php echo $user['last_name']; ?></td>
                                     <td class="p-3">
-                                        <button type="button" class="btn bg-black text-white btn-sm rounded-5">
+                                        <button type="button" style="background-color: #FFD531;" class="btn text-black btn-sm rounded-5">
                                             <?php echo $user['type']; ?>
                                         </button>
                                     </td class="p-3">

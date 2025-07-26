@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div class="container-fluid p-0 min-vh-100">
         <div class="d-flex flex-column flex-md-row w-100 h-100">
-            <div class="d-none d-md-flex col-md-6 justify-content-center align-items-center text-center bg-black text-white p-4">
+            <div class="d-none d-md-flex col-md-6 justify-content-center align-items-center text-center text-white p-4" style="background-color: #296849;">
                 <div>
                     <img src="assets/images/pethaus_logo.png" alt="PetHaus Logo" class="mb-4" style="width: 150px;">
                     <h2 class="fw-bold">PetHaus Animal Clinic and Supplies</h2>
@@ -135,7 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
                         </div>
 
-                        <button type="submit" class="btn bg-black text-white w-100">REGISTER</button>
+                        <button type="submit" class="btn text-white w-100" style="background-color: #FFD531;">REGISTER</button>
 
                         <p class="mt-3 text-center">Already have an account? <a href="login.php" class="text-black">Login</a></p>
 

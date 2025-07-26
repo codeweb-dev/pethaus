@@ -122,13 +122,13 @@ $grandAverage = $grandTotalSales > 0 ? ($grandRevenue / $grandTotalSales) : 0;
             color: #000;
         }
 
-        .sidebar.collapsed .custom-nav li a span {
-            display: none;
+        .sidebar .custom-nav li a:hover {
+            background-color: #296849;
+            color: white;
         }
 
-        .sidebar .custom-nav li a:hover {
-            background-color: black;
-            color: white;
+        .sidebar.collapsed .custom-nav li a span {
+            display: none;
         }
 
         .toggle-btn {
@@ -138,7 +138,7 @@ $grandAverage = $grandTotalSales > 0 ? ($grandRevenue / $grandTotalSales) : 0;
             cursor: pointer;
             padding: 0.2rem 0.7rem;
             border-radius: 999px;
-            background-color: black;
+            background-color: #296849;
             color: white;
             z-index: 1000;
         }
@@ -246,7 +246,7 @@ $grandAverage = $grandTotalSales > 0 ? ($grandRevenue / $grandTotalSales) : 0;
                     <div class="col-md-7">
                         <h5 class="fw-bold">Sales Records</h5>
                         <table class="table table-bordered table-hover" id="salesTable">
-                            <thead class="table-dark">
+                            <thead class="table-white">
                                 <tr>
                                     <th>ID</th>
                                     <th>Date</th>
@@ -296,7 +296,7 @@ $grandAverage = $grandTotalSales > 0 ? ($grandRevenue / $grandTotalSales) : 0;
                                     <label for="toDate" class="form-label">To:</label>
                                     <input type="date" id="toDate" name="toDate" class="form-control" value="<?= $_GET['toDate'] ?? '' ?>">
                                 </div>
-                                <button type="submit" class="btn btn-dark w-100">Filter</button>
+                                <button type="submit" class="btn text-black w-100" style="background-color: #FFD531;">Filter</button>
                             </form>
 
                             <ul class="list-group">

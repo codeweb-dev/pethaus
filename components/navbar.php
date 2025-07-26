@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: black;">
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #296849;">
     <div class="container-fluid">
         <div class="d-flex align-items-center justify-content-center" style="height: 50px;">
             <img src="../assets/images/pethaus_logo.png" alt="website-logo" style="width: 50px;">

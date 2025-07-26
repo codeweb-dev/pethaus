@@ -87,13 +87,13 @@ if ($result) {
             color: #000;
         }
 
-        .sidebar.collapsed .custom-nav li a span {
-            display: none;
+        .sidebar .custom-nav li a:hover {
+            background-color: #296849;
+            color: white;
         }
 
-        .sidebar .custom-nav li a:hover {
-            background-color: black;
-            color: white;
+        .sidebar.collapsed .custom-nav li a span {
+            display: none;
         }
 
         .toggle-btn {
@@ -103,7 +103,7 @@ if ($result) {
             cursor: pointer;
             padding: 0.2rem 0.7rem;
             border-radius: 999px;
-            background-color: black;
+            background-color: #296849;
             color: white;
             z-index: 1000;
         }
@@ -193,7 +193,7 @@ if ($result) {
         </div>
 
         <div class="main-wrapper d-flex p-4">
-            <div class="w-auto">
+            <div class="flex-grow-1">
                 <h3 class="fw-bold mb-3">Pet Record</h3>
                 <div class="d-flex justify-content-lg-between mb-5 gap-3 flex-md-row flex-column">
                     <div class="input-group mb-3 w-auto">
@@ -203,11 +203,11 @@ if ($result) {
 
                     <div class="d-flex gap-2">
                         <div>
-                            <button class="btn bg-black text-white" onclick="location.reload();">
+                            <button class="btn text-black" style="background-color: #FFD531;" onclick="location.reload();">
                                 <i class="fa-solid fa-arrows-rotate"></i> Refresh
                             </button>
 
-                            <button type="button" class="btn bg-black text-white" data-bs-toggle="modal" data-bs-target="#addNewPet">
+                            <button type="button" class="btn text-black" style="background-color: #FFD531;" data-bs-toggle="modal" data-bs-target="#addNewPet">
                                 <i class="fa-solid fa-plus"></i> Add new pet
                             </button>
                         </div>
@@ -230,10 +230,10 @@ if ($result) {
                                                             <option value="" disabled <?php echo empty($old['owner_id']) ? 'selected' : ''; ?>>Select Owner</option>
                                                             <?php
                                                             $owners = mysqli_query($conn, "
-                                                                                    SELECT owner_id, CONCAT(first_name, ' ', middle_name, ' ', last_name) AS full_name 
-                                                                                    FROM pet_owner_records 
-                                                                                    ORDER BY first_name
-                                                                                ");
+                                                                SELECT owner_id, CONCAT_WS(' ', first_name, middle_name, last_name) AS full_name 
+                                                                FROM pet_owner_records 
+                                                                ORDER BY first_name
+                                                            ");
                                                             while ($row = mysqli_fetch_assoc($owners)) {
                                                                 $selected = ($old['owner_id'] ?? '') == $row['owner_id'] ? 'selected' : '';
                                                                 echo '<option value="' . $row['owner_id'] . '" ' . $selected . '>' . htmlspecialchars($row['full_name']) . '</option>';
@@ -420,7 +420,7 @@ if ($result) {
                         <tbody class="text-muted" id="staffTableBody">
                             <?php foreach ($pets as $pet): ?>
                                 <tr class="hover:bg-gray-100 border-b">
-                                    <td class="p-3"><?php echo $pet['pet_id']; ?></td>
+                                    <td class="p-3"><?php echo $pet['pet_code']; ?></td>
                                     <td class="p-3"><?php echo $pet['name']; ?></td>
                                     <td class="p-3"><?php echo $pet['species']; ?></td>
                                     <td class="p-3"><?php echo $pet['breed']; ?></td>
@@ -616,6 +616,16 @@ if ($result) {
     <?php endif; ?>
 
     <script>
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#staffTableBody tr');
+
+            rows.forEach(row => {
+                const rowText = row.innerText.toLowerCase();
+                row.style.display = rowText.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
         document.querySelectorAll('.view-medical-records').forEach(icon => {
             icon.addEventListener('click', () => {
                 const petId = icon.getAttribute('data-id');

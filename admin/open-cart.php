@@ -22,7 +22,9 @@ if (!$result) {
 }
 
 $staff = $_SESSION['first_name'] ?? '';
-$staff .= isset($_SESSION['middle_name']) ? ' ' . $_SESSION['middle_name'][0] . '.' : '';
+$staff .= (isset($_SESSION['middle_name']) && $_SESSION['middle_name'] !== '')
+    ? ' ' . $_SESSION['middle_name'][0] . '.'
+    : '';
 $staff .= ' ' . ($_SESSION['last_name'] ?? '');
 
 $cartItems = [];
@@ -41,8 +43,11 @@ while ($row = mysqli_fetch_assoc($result)) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" href="../assets/images/pethaus_logo.png" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="../assets/style.css">
     <title>Open Cart</title>
@@ -83,13 +88,13 @@ while ($row = mysqli_fetch_assoc($result)) {
             color: #000;
         }
 
-        .sidebar.collapsed .custom-nav li a span {
-            display: none;
+        .sidebar .custom-nav li a:hover {
+            background-color: #296849;
+            color: white;
         }
 
-        .sidebar .custom-nav li a:hover {
-            background-color: black;
-            color: white;
+        .sidebar.collapsed .custom-nav li a span {
+            display: none;
         }
 
         .toggle-btn {
@@ -99,7 +104,7 @@ while ($row = mysqli_fetch_assoc($result)) {
             cursor: pointer;
             padding: 0.2rem 0.7rem;
             border-radius: 999px;
-            background-color: black;
+            background-color: #296849;
             color: white;
             z-index: 1000;
         }
@@ -208,7 +213,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                         <h5 class="fw-bold mb-3">Cart Items</h5>
 
                         <table class="table table-bordered align-middle">
-                            <thead class="table-dark">
+                            <thead class="table-white">
                                 <tr>
                                     <th>Product</th>
                                     <th>Quantity</th>
@@ -224,10 +229,14 @@ while ($row = mysqli_fetch_assoc($result)) {
                                         <td><?= htmlspecialchars($item['product_name']) ?></td>
                                         <td class="d-flex align-items-center gap-2">
                                             <form method="post" action="../actions/update_cart.php" class="d-flex gap-2">
-                                                <input type="hidden" name="product_sale_id" value="<?= $item['product_sale_id'] ?>">
-                                                <button name="action" value="decrease" class="btn btn-sm btn-outline-secondary">-</button>
-                                                <input type="number" class="form-control form-control-sm text-center" style="width: 60px;" value="<?= $item['quantity'] ?>" readonly>
-                                                <button name="action" value="increase" class="btn btn-sm btn-outline-secondary">+</button>
+                                                <input type="hidden" name="product_sale_id"
+                                                    value="<?= $item['product_sale_id'] ?>">
+                                                <button name="action" value="decrease"
+                                                    class="btn btn-sm btn-outline-secondary">-</button>
+                                                <input type="number" class="form-control form-control-sm text-center"
+                                                    style="width: 60px;" value="<?= $item['quantity'] ?>" readonly>
+                                                <button name="action" value="increase"
+                                                    class="btn btn-sm btn-outline-secondary">+</button>
                                             </form>
                                         </td>
                                         <td>₱<?= number_format($item['price'], 2) ?></td>
@@ -235,8 +244,10 @@ while ($row = mysqli_fetch_assoc($result)) {
                                         <td>₱<?= number_format($item['subtotal'], 2) ?></td>
                                         <td>
                                             <form method="post" action="../actions/remove_cart_item.php">
-                                                <input type="hidden" name="product_sale_id" value="<?= $item['product_sale_id'] ?>">
-                                                <button class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>
+                                                <input type="hidden" name="product_sale_id"
+                                                    value="<?= $item['product_sale_id'] ?>">
+                                                <button class="btn btn-sm btn-danger"><i
+                                                        class="fas fa-trash-alt"></i></button>
                                             </form>
                                         </td>
                                     </tr>
@@ -251,18 +262,21 @@ while ($row = mysqli_fetch_assoc($result)) {
                         </table>
 
                         <div class="text-end">
-                            <button class="btn bg-black text-white" data-bs-toggle="modal" data-bs-target="#placeOrderModal">Check Out</button>
+                            <button class="btn text-black" style="background-color: #FFD531;" data-bs-toggle="modal"
+                                data-bs-target="#placeOrderModal">Check Out</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Place Order Modal -->
-                <div class="modal fade" id="placeOrderModal" tabindex="-1" aria-labelledby="placeOrderModalLabel" aria-hidden="true">
+                <div class="modal fade" id="placeOrderModal" tabindex="-1" aria-labelledby="placeOrderModalLabel"
+                    aria-hidden="true">
                     <div class="modal-dialog modal-lg modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title fw-bold" id="placeOrderModalLabel">View Receipt</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
                             </div>
 
                             <div class="modal-body">
@@ -273,7 +287,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                                 </div>
 
                                 <table class="table table-bordered">
-                                    <thead class="table-secondary">
+                                    <thead class="table-white">
                                         <tr>
                                             <th>Product</th>
                                             <th>Qty</th>
@@ -292,7 +306,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                                         <?php endforeach; ?>
                                     </tbody>
                                     <tfoot>
-                                        <tr class="table-dark">
+                                        <tr class="table-white">
                                             <td colspan="3" class="text-end fw-bold">Total</td>
                                             <td class="fw-bold">₱<?= number_format($total, 2) ?></td>
                                         </tr>
