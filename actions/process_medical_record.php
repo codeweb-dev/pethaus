@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $weight = $_POST['weight'];
     $temp = $_POST['temperature'];
     $complaint = $_POST['complaint'];
+    $attending_vet = $_POST['attending_vet'] ?? 'Unknown'; // New field for attending vet
 
     // Optional fields
     $treat_date = $_POST['treatment_date'] ?? null;
@@ -44,20 +45,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $owner_id = intval($_POST['owner_id'] ?? 0);
 
+    $code_result = $conn->query("SELECT MAX(medical_record_id) AS last_id FROM medical_records");
+    $row = $code_result->fetch_assoc();
+    $next_id = ($row['last_id'] ?? 0) + 1;
+    $medical_record_code = 'MR' . str_pad($next_id, 5, '0', STR_PAD_LEFT);
+
     $stmt = $conn->prepare("
         INSERT INTO medical_records (
-            pet_id, owner_id, type, date_started, date_ended,
-            description, weight, temperature, complaint,
+            pet_id, owner_id, medical_record_code, type, date_started, date_ended,
+            description, weight, temperature, complaint, attending_vet,
             treatment_date, treatment_name, treatment_test, treatment_remarks, treatment_charge,
             prescription_date, prescription_name, prescription_description, prescription_remarks, prescription_charge,
             others_date, others_name, others_quantity, others_remarks, others_charge
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
 
     $stmt->bind_param(
-        "iisssssssssssdsssssdsssd",
+        "iisssssssssssssdsssssdsssd",
         $pet_id,
         $owner_id,
+        $medical_record_code,
         $type,
         $start,
         $end,
@@ -65,6 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $weight,
         $temp,
         $complaint,
+        $attending_vet,
         $treat_date,
         $treat_name,
         $treat_test,

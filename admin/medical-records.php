@@ -557,7 +557,7 @@ if ($result) {
                                 <th scope="col">TEMPERATURE</th>
                                 <th scope="col">PET NAME</th>
                                 <th scope="col">PET OWNER</th>
-                                <!--<th scope="col">ATTENDING VET</th>-->
+                                <th scope="col">ATTENDING VET</th>
                                 <th scope="col">ACTION</th>
                             </tr>
                         </thead>
@@ -565,7 +565,7 @@ if ($result) {
                             <?php if (!empty($records)): ?>
                                 <?php foreach ($records as $rec): ?>
                                     <tr>
-                                        <td class="p-3"><?php echo $rec['medical_record_id']; ?></td>
+                                        <td class="p-3"><?php echo $rec['medical_record_code']; ?></td>
                                         <td class="p-3"><?php echo $rec['type']; ?></td>
                                         <td class="p-3"><?php echo date('F j, Y', strtotime($rec['date_started'])); ?></td>
                                         <td class="p-3"><?php echo date('F j, Y', strtotime($rec['date_ended'])); ?></td>
@@ -580,6 +580,7 @@ if ($result) {
                                             echo $rec['last_name'];
                                             ?>
                                         </td>
+                                        <td class="p-3"><?php echo $rec['attending_vet']; ?></td>
                                         <td class="p-3 d-flex alignt-items-center gap-3">
                                             <a href="../actions/view_bill.php?record_id=<?php echo $rec['medical_record_id']; ?>"
                                                 class="text-black"><i class="fa-solid fa-file-medical"></i></a>
@@ -587,7 +588,7 @@ if ($result) {
                                             <a href="../actions/view_medical.php?id=<?php echo $rec['medical_record_id']; ?>"
                                                 class="text-black"><i class="fa-solid fa-file-invoice-dollar"></i></a>
 
-                                            <!-- <a href="edit_medical.php?id=<?php echo $rec['medical_record_id']; ?>" class="text-black"><i class="fa-solid fa-pen-to-square"></i></a> -->
+                                            <a href="edit_medical.php?id=<?php echo $rec['medical_record_id']; ?>" class="text-black"><i class="fa-solid fa-pen-to-square"></i></a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

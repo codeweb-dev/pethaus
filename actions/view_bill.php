@@ -61,7 +61,7 @@ $pdf->SetFont('Arial', '', 12);
 $pdf->SetFont('Arial', 'B', 10);
 
 // Logo on left
-$pdf->Image('../assets/images/logo.jpg', 10, 1, 40);
+$pdf->Image('../assets/images/logo.jpg', 10, 7, 25);
 
 // Right-align clinic details
 $pdf->SetFont('Arial', 'B', 12);

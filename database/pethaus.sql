@@ -83,6 +83,7 @@ CREATE TABLE `product_sale` (
 CREATE TABLE `medical_records` (
   `medical_record_id` INT AUTO_INCREMENT PRIMARY KEY,
   `pet_id` INT NULL,
+  `medical_record_code` VARCHAR(15) UNIQUE NOT NULL,
   `owner_id` INT NULL, -- attending vet or staff
   `type` VARCHAR(255) NOT NULL,
   `date_started` DATE NOT NULL,
@@ -90,6 +91,7 @@ CREATE TABLE `medical_records` (
   `description` VARCHAR(255) NOT NULL,
   `weight` VARCHAR(255) NOT NULL,
   `temperature` VARCHAR(255) NOT NULL,
+  `attending_vet` VARCHAR(255) NOT NULL,
   `complaint` VARCHAR(255) NOT NULL,
 
   `treatment_date` DATE,

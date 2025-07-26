@@ -51,7 +51,7 @@ $pdf->SetFont('Arial', 'B', 12);
 $pdf->Cell(0, 10, 'Medical Record Document', 0, 1, 'C');
 
 // Logo + Clinic Info
-$pdf->Image('../assets/images/logo.jpg', 10, 7, 40);
+$pdf->Image('../assets/images/logo.jpg', 10, 19, 25);
 $pdf->SetXY(140, 20);
 $pdf->SetFont('Arial', 'B', 12);
 $pdf->Cell(0, 6, 'Pet Haus Animal Clinic & Supplies', 0, 1, 'R');
@@ -89,27 +89,32 @@ $pdf->Ln(5);
 
 // Summary
 $pdf->SetFont('Arial', 'B', 10);
-$pdf->Cell(60, 8, 'Type:', 1);
-$pdf->Cell(60, 8, 'Start Date:', 1);
-$pdf->Cell(70, 8, 'End Date:', 1, 1);
+$pdf->Cell(50, 8, 'Type', 1);
+$pdf->Cell(50, 8, 'Attending Vet', 1);
+$pdf->Cell(45, 8, 'Start Date', 1);
+$pdf->Cell(45, 8, 'End Date', 1, 1);
+
 $pdf->SetFont('Arial', '', 10);
-$pdf->Cell(60, 8, $data['type'], 1);
-$pdf->Cell(60, 8, $data['date_started'], 1);
-$pdf->Cell(70, 8, $data['date_ended'], 1, 1);
+$pdf->Cell(50, 8, $data['type'], 1);
+$pdf->Cell(50, 8, $data['attending_vet'], 1);
+$pdf->Cell(45, 8, $data['date_started'], 1);
+$pdf->Cell(45, 8, $data['date_ended'], 1, 1);
 
 $pdf->SetFont('Arial', 'B', 10);
-$pdf->Cell(60, 8, 'Description:', 1);
-$pdf->Cell(60, 8, 'Weight:', 1);
-$pdf->Cell(70, 8, 'Temperature:', 1, 1);
+$pdf->Cell(90, 8, 'Description', 1);
+$pdf->Cell(50, 8, 'Weight', 1);
+$pdf->Cell(50, 8, 'Temperature', 1, 1);
+
 $pdf->SetFont('Arial', '', 10);
-$pdf->Cell(60, 8, $data['description'], 1);
-$pdf->Cell(60, 8, $data['weight'], 1);
-$pdf->Cell(70, 8, $data['temperature'] . ' °C', 1, 1);
+$pdf->Cell(90, 8, $data['description'], 1);
+$pdf->Cell(50, 8, $data['weight'], 1);
+$pdf->Cell(50, 8, $data['temperature'] . ' °C', 1, 1);
 
 $pdf->SetFont('Arial', 'B', 10);
-$pdf->Cell(190, 8, 'Complaint:', 1, 1);
+$pdf->Cell(190, 8, 'Complaint', 1, 1);
 $pdf->SetFont('Arial', '', 10);
 $pdf->MultiCell(190, 8, $data['complaint'], 1);
+$pdf->Ln(5);
 
 $pdf->Ln(5);
 
