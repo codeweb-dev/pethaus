@@ -403,7 +403,7 @@ if ($result) {
                                                                     <option value="OTOSCOPE">OTOSCOPE</option>
                                                                     <option value="WOUND LAMP">WOUND LAMP</option>
                                                                 </optgroup>
-                                                                \
+                                                                
                                                                 <optgroup label="Other Services">
                                                                     <option value="GROOMING">GROOMING</option>
                                                                 </optgroup>
