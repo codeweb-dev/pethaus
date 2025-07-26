@@ -1,6 +1,5 @@
 <?php
 session_start(); // Make sure the user is logged in
-
 require('../assets/fpdf/fpdf.php');
 include('../conn.php');
 
@@ -15,7 +14,8 @@ $query = "
     SELECT 
         mr.*, 
         p.name AS pet_name, p.breed, p.species, p.color, p.sex, p.birthdate, p.markings,
-        po.first_name, po.middle_name, po.last_name, po.mobile_number
+        po.first_name, po.middle_name, po.last_name, po.mobile_number,
+        mr.others_charge
     FROM medical_records mr
     LEFT JOIN pet_records p ON mr.pet_id = p.pet_id
     LEFT JOIN pet_owner_records po ON mr.owner_id = po.owner_id
@@ -31,10 +31,52 @@ if (!$data) {
     die("Medical record not found.");
 }
 
+// Get all treatments and prescriptions for this medical record
+$treatments = [];
+$prescriptions = [];
+
+$treatment_query = "
+    SELECT treatment_date, treatment_name, treatment_charge
+    FROM medical_treatments
+    WHERE medical_record_id = ?
+";
+$prescription_query = "
+    SELECT prescription_date, prescription_name, prescription_charge
+    FROM medical_prescriptions
+    WHERE medical_record_id = ?
+";
+
+$treatment_stmt = $conn->prepare($treatment_query);
+$treatment_stmt->bind_param("i", $record_id);
+$treatment_stmt->execute();
+$treatment_result = $treatment_stmt->get_result();
+
+while ($treatment = $treatment_result->fetch_assoc()) {
+    $treatments[] = $treatment;
+}
+
+$prescription_stmt = $conn->prepare($prescription_query);
+$prescription_stmt->bind_param("i", $record_id);
+$prescription_stmt->execute();
+$prescription_result = $prescription_stmt->get_result();
+
+while ($prescription = $prescription_result->fetch_assoc()) {
+    $prescriptions[] = $prescription;
+}
+
 // Calculate totals
-$treat_charge = floatval($data['treatment_charge']);
-$rx_charge = floatval($data['prescription_charge']);
-$other_charge = floatval($data['others_charge']);
+$treat_charge = 0.00;
+$rx_charge = 0.00;
+$other_charge = isset($data['others_charge']) ? floatval($data['others_charge']) : 0.00;
+
+foreach ($treatments as $treatment) {
+    $treat_charge += floatval($treatment['treatment_charge']);
+}
+
+foreach ($prescriptions as $prescription) {
+    $rx_charge += floatval($prescription['prescription_charge']);
+}
+
 $total = $treat_charge + $rx_charge + $other_charge;
 
 // Format owner name
@@ -102,26 +144,23 @@ $pdf->Cell(35, 8, 'TOTAL', 1, 1, 'C', true);
 
 // Table Body
 $pdf->SetFont('Arial', '', 11);
-$hasItems = false;
 
 // Treatment
-if (!empty($data['treatment_name'])) {
-    $pdf->Cell(35, 8, $data['treatment_date'], 1);
-    $pdf->Cell(55, 8, $data['treatment_name'], 1);
+foreach ($treatments as $treatment) {
+    $pdf->Cell(35, 8, $treatment['treatment_date'], 1);
+    $pdf->Cell(55, 8, $treatment['treatment_name'], 1);
     $pdf->Cell(30, 8, 'N/A', 1);
     $pdf->Cell(30, 8, 'N/A', 1);
-    $pdf->Cell(35, 8, 'PHP ' . number_format($treat_charge, 2), 1, 1);
-    $hasItems = true;
+    $pdf->Cell(35, 8, 'PHP ' . number_format($treatment['treatment_charge'], 2), 1, 1);
 }
 
 // Prescription
-if (!empty($data['prescription_name'])) {
-    $pdf->Cell(35, 8, $data['prescription_date'], 1);
-    $pdf->Cell(55, 8, $data['prescription_name'], 1);
+foreach ($prescriptions as $prescription) {
+    $pdf->Cell(35, 8, $prescription['prescription_date'], 1);
+    $pdf->Cell(55, 8, $prescription['prescription_name'], 1);
     $pdf->Cell(30, 8, 'N/A', 1);
     $pdf->Cell(30, 8, 'N/A', 1);
-    $pdf->Cell(35, 8, 'PHP ' . number_format($rx_charge, 2), 1, 1);
-    $hasItems = true;
+    $pdf->Cell(35, 8, 'PHP ' . number_format($prescription['prescription_charge'], 2), 1, 1);
 }
 
 // Others
@@ -131,12 +170,6 @@ if (!empty($data['others_name'])) {
     $pdf->Cell(30, 8, $data['others_quantity'], 1);
     $pdf->Cell(30, 8, 'N/A', 1);
     $pdf->Cell(35, 8, 'PHP ' . number_format($other_charge, 2), 1, 1);
-    $hasItems = true;
-}
-
-// If no items at all
-if (!$hasItems) {
-    $pdf->Cell(185, 8, 'No charges recorded for this medical record.', 1, 1, 'C');
 }
 
 // Total
@@ -148,10 +181,6 @@ $pdf->Ln(10);
 $pdf->SetFont('Arial', '', 11);
 
 // Right-aligned Billing Summary
-$pdf->Ln(10);
-$pdf->SetFont('Arial', '', 11);
-
-// Set starting X position (adjust 110–140 based on layout)
 $pdf->SetX(120);
 $pdf->Cell(50, 8, 'Initial Billing:', 0, 0, 'R');
 $pdf->Cell(30, 8, 'PHP ' . number_format($total, 2), 0, 1, 'R');
@@ -163,6 +192,7 @@ $pdf->Cell(30, 8, 'PHP 0.00', 0, 1, 'R');
 $pdf->SetX(120);
 $pdf->Cell(50, 8, 'Total Amount Balance:', 0, 0, 'R');
 $pdf->Cell(30, 8, 'PHP ' . number_format($total, 2), 0, 1, 'R');
+
 // Prepared By
 $pdf->Ln(5);
 $pdf->SetFont('Arial', '', 11);
@@ -170,3 +200,4 @@ $pdf->Cell(0, 8, 'Prepared By: ' . $staff, 0, 1, 'L');
 
 // Output PDF
 $pdf->Output('I', 'medical_bill_' . $record_id . '.pdf');
+?>

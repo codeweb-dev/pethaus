@@ -341,37 +341,35 @@ if ($result) {
 
                                             <!-- Step 3: Treatment -->
                                             <div class="wizard-step d-none" data-step="3" style="padding-left: 0;">
-                                                <h5 class="mb-3">Step 3: Treatment</h5>
+                                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                                    <h5 class="mb-3">Step 3: Treatment</h5>
 
-                                                <button type="button" class="btn bg-black text-white mb-3 ms-0"
-                                                    id="addTreatmentBtn">
-                                                    + Add Treatment
-                                                </button>
+                                                    <button type="button" class="btn bg-black text-white mb-3" id="addTreatmentBtn">
+                                                        + Add Treatment
+                                                    </button>
+                                                </div>
 
-                                                <div id="treatmentForm" class="d-none">
-                                                    <div class="row g-2 mb-2 ms-0">
+                                                <div id="treatmentContainer"></div>
+
+                                                <div id="treatmentTemplate" class="d-none">
+                                                    <div class="row g-2 mb-2 treatment-entry">
                                                         <div class="col-md-2">
                                                             <label class="form-label">Date</label>
-                                                            <input type="date" name="treatment_date"
-                                                                class="form-control">
+                                                            <input type="date" name="treatment_date[]" class="form-control">
                                                         </div>
-
                                                         <div class="col-md-3">
                                                             <label class="form-label">Case</label>
-                                                            <input type="text" name="treatment_name"
-                                                                class="form-control">
+                                                            <input type="text" name="treatment_name[]" class="form-control">
                                                         </div>
-
                                                         <div class="col-md-2">
                                                             <label class="form-label">Test</label>
-                                                            <select class="form-control" name="treatment_tests"
+                                                            <select class="form-control" name="treatment_tests[]"
                                                                 style="height: auto; max-height: 200px; overflow-y: auto;">
                                                                 <option value="" disabled selected>Select Test</option>
 
-                                                                <!-- Diagnostic Tests -->
                                                                 <optgroup label="Diagnostic Tests">
-                                                                    <option value="4DX">4DX</option>
                                                                     <option value="3DX">3DX</option>
+                                                                    <option value="4DX">4DX</option>
                                                                     <option value="5DX">5DX</option>
                                                                     <option value="CBC">CBC</option>
                                                                     <option value="CDV">CDV</option>
@@ -382,13 +380,11 @@ if ($result) {
                                                                     <option value="DISTEMPER">DISTEMPER</option>
                                                                 </optgroup>
 
-                                                                <!-- Imaging -->
                                                                 <optgroup label="Imaging">
                                                                     <option value="ULTRASOUND">ULTRASOUND</option>
                                                                     <option value="X-RAY">X-RAY</option>
                                                                 </optgroup>
 
-                                                                <!-- Laboratory Tests -->
                                                                 <optgroup label="Laboratory Tests">
                                                                     <option value="FECALYSIS">FECALYSIS</option>
                                                                     <option value="SKIN SCRAPPING">SKIN SCRAPPING
@@ -396,7 +392,6 @@ if ($result) {
                                                                     <option value="BLOOD SMEAR">BLOOD SMEAR</option>
                                                                 </optgroup>
 
-                                                                <!-- Procedures -->
                                                                 <optgroup label="Procedures">
                                                                     <option value="CEAZARIAN">CEAZARIAN</option>
                                                                     <option value="DENTAL CLEANING">DENTAL CLEANING
@@ -408,8 +403,7 @@ if ($result) {
                                                                     <option value="OTOSCOPE">OTOSCOPE</option>
                                                                     <option value="WOUND LAMP">WOUND LAMP</option>
                                                                 </optgroup>
-
-                                                                <!-- Other Services -->
+                                                                \
                                                                 <optgroup label="Other Services">
                                                                     <option value="GROOMING">GROOMING</option>
                                                                 </optgroup>
@@ -417,13 +411,17 @@ if ($result) {
                                                         </div>
                                                         <div class="col-md-2">
                                                             <label class="form-label">Charge (₱)</label>
-                                                            <input type="number" step="0.01" name="treatment_charge"
-                                                                class="form-control">
+                                                            <input type="number" step="0.01" name="treatment_charge[]" class="form-control">
                                                         </div>
                                                         <div class="col-md-3">
                                                             <label class="form-label">Remarks</label>
-                                                            <textarea class="form-control"
-                                                                name="treatment_remarks"></textarea>
+                                                            <input name="treatment_remarks[]" class="form-control me-2">
+                                                        </div>
+
+                                                        <div class="col-md-3">
+                                                            <button type="button" class="btn btn-sm btn-danger removeTreatmentBtn">
+                                                                Remove
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -431,43 +429,44 @@ if ($result) {
 
                                             <!-- Step 4: Prescription -->
                                             <div class="wizard-step d-none" data-step="4">
-                                                <h5 class="mb-3">Step 4: Prescription</h5>
+                                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                                    <h5 class="mb-3">Step 4: Prescription</h5>
 
-                                                <button type="button" class="btn bg-black text-white mb-3"
-                                                    id="addPrescriptionBtn">+ Add Prescription</button>
+                                                    <button type="button" class="btn bg-black text-white mb-3" id="addPrescriptionBtn">
+                                                        + Add Prescription
+                                                    </button>
+                                                </div>
 
-                                                <div id="prescriptionForm" class="d-none">
-                                                    <div class="row g-2 mb-2">
+                                                <div id="prescriptionContainer"></div>
+
+                                                <div id="prescriptionTemplate" class="d-none">
+                                                    <div class="row g-2 mb-2 prescription-entry">
                                                         <div class="col-md-2">
                                                             <label class="form-label">Date</label>
-                                                            <input type="date" name="prescription_date"
-                                                                class="form-control">
+                                                            <input type="date" name="prescription_date[]" class="form-control">
                                                         </div>
                                                         <div class="col-md-3">
                                                             <label class="form-label">Medication</label>
-                                                            <input type="text" name="prescription_name"
-                                                                class="form-control">
+                                                            <input type="text" name="prescription_name[]" class="form-control">
                                                         </div>
                                                         <div class="col-md-3">
                                                             <label class="form-label">Dose</label>
-                                                            <input type="text" name="prescription_description"
-                                                                class="form-control">
+                                                            <input type="text" name="prescription_description[]" class="form-control">
                                                         </div>
                                                         <div class="col-md-3">
                                                             <label class="form-label">Sig</label>
-                                                            <input type="text" name="prescription_description"
-                                                                class="form-control">
+                                                            <input type="text" name="prescription_sig[]" class="form-control">
                                                         </div>
-
                                                         <div class="col-md-2 mt-2">
                                                             <label class="form-label">Charge (₱)</label>
-                                                            <input type="number" step="0.01" name="prescription_charge"
-                                                                class="form-control">
+                                                            <input type="number" step="0.01" name="prescription_charge[]" class="form-control">
                                                         </div>
                                                         <div class="col-md-3 mt-2">
                                                             <label class="form-label">Remarks</label>
-                                                            <input type="text" name="prescription_remarks"
-                                                                class="form-control">
+                                                            <input type="text" name="prescription_remarks[]" class="form-control">
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <button type="button" class="btn btn-sm btn-danger removePrescriptionBtn">Remove</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -508,6 +507,11 @@ if ($result) {
                                                                 class="form-control">
                                                         </div>
                                                     </div>
+                                                </div>
+
+                                                <div class="mt-3">
+                                                    <h6>Total Treatment Charges: <span id="totalTreatmentCharges">PHP 0.00</span></h6>
+                                                    <h6>Total Prescription Charges: <span id="totalPrescriptionCharges">PHP 0.00</span></h6>
                                                 </div>
                                             </div>
                                         </div>
@@ -659,16 +663,6 @@ if ($result) {
             }
         });
 
-        document.getElementById('addTreatmentBtn').addEventListener('click', function() {
-            document.getElementById('treatmentForm').classList.remove('d-none');
-            this.classList.add('d-none');
-        });
-
-        document.getElementById('addPrescriptionBtn').addEventListener('click', function() {
-            document.getElementById('prescriptionForm').classList.remove('d-none');
-            this.classList.add('d-none');
-        });
-
         document.getElementById('addOthersBtn').addEventListener('click', function() {
             document.getElementById('othersForm').classList.remove('d-none');
             this.classList.add('d-none');
@@ -713,7 +707,6 @@ if ($result) {
             });
         });
 
-
         const sidebar = document.getElementById('sidebar');
         const toggleIcon = document.getElementById('toggle-icon');
 
@@ -753,6 +746,57 @@ if ($result) {
                 sidebar.classList.remove('no-transition');
             }, 10);
         });
+
+        function addEntry(btnId, containerId, templateId, removeSelector) {
+            const btn = document.getElementById(btnId);
+            const container = document.getElementById(containerId);
+            const tpl = document.getElementById(templateId).firstElementChild;
+
+            btn.addEventListener('click', () => {
+                const clone = tpl.cloneNode(true);
+                clone.classList.remove('d-none');
+                container.appendChild(clone);
+                recalculateTotals();
+            });
+
+            container.addEventListener('click', e => {
+                if (e.target.matches(removeSel)) {
+                    e.target.closest('.treatment-entry, .prescription-entry').remove();
+                    recalculateTotals();
+                }
+            });
+
+            container.addEventListener('input', e => {
+                if (e.target.matches('input[name$="charge[]"]')) {
+                    recalculateTotals();
+                }
+            });
+        }
+
+        let totalTreatment = 0,
+            totalPrescription = 0;
+
+        function updateTotals() {
+            document.getElementById('totalTreatmentCharges').innerText =
+                'PHP ' + totalTreatment.toFixed(2);
+            document.getElementById('totalPrescriptionCharges').innerText =
+                'PHP ' + totalPrescription.toFixed(2);
+        }
+
+        function recalculateTotals() {
+            totalTreatment = Array.from(document.querySelectorAll('input[name="treatment_charge[]"]'))
+                .reduce((sum, inpt) => sum + parseFloat(inpt.value || 0), 0);
+
+            totalPrescription = Array.from(document.querySelectorAll('input[name="prescription_charge[]"]'))
+                .reduce((sum, inpt) => sum + parseFloat(inpt.value || 0), 0);
+
+            updateTotals();
+        }
+
+        recalculateTotals();
+
+        addEntry('addTreatmentBtn', 'treatmentContainer', 'treatmentTemplate', '.removeTreatmentBtn');
+        addEntry('addPrescriptionBtn', 'prescriptionContainer', 'prescriptionTemplate', '.removePrescriptionBtn');
     </script>
 
     <?php include('../components/toast.php'); ?>

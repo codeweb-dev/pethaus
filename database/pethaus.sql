@@ -94,18 +94,6 @@ CREATE TABLE `medical_records` (
   `attending_vet` VARCHAR(255) NOT NULL,
   `complaint` VARCHAR(255) NOT NULL,
 
-  `treatment_date` DATE,
-  `treatment_name` VARCHAR(255),
-  `treatment_test` VARCHAR(255),
-  `treatment_remarks` VARCHAR(255),
-  `treatment_charge` DECIMAL(10,2),
-
-  `prescription_date` DATE,
-  `prescription_name` VARCHAR(255),
-  `prescription_description` VARCHAR(255),
-  `prescription_remarks` VARCHAR(255),
-  `prescription_charge` DECIMAL(10,2),
-
   `others_date` DATE,
   `others_name` VARCHAR(255),
   `others_quantity` VARCHAR(255),
@@ -114,6 +102,29 @@ CREATE TABLE `medical_records` (
 
   FOREIGN KEY (`pet_id`) REFERENCES `pet_records`(`pet_id`) ON DELETE CASCADE,
   FOREIGN KEY (`owner_id`) REFERENCES `pet_owner_records`(`owner_id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE medical_treatments (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  medical_record_id INT NOT NULL,
+  treatment_date DATE,
+  treatment_name VARCHAR(255),
+  treatment_test VARCHAR(255),
+  treatment_remarks TEXT,
+  treatment_charge DECIMAL(10,2),
+  FOREIGN KEY (medical_record_id) REFERENCES medical_records(medical_record_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE medical_prescriptions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  medical_record_id INT NOT NULL,
+  prescription_date DATE,
+  prescription_name VARCHAR(255),
+  prescription_description VARCHAR(255),
+  prescription_sig VARCHAR(255),
+  prescription_remarks TEXT,
+  prescription_charge DECIMAL(10,2),
+  FOREIGN KEY (medical_record_id) REFERENCES medical_records(medical_record_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `medical_bill` (

@@ -5,17 +5,28 @@ include('../conn.php');
 $bills = [];
 
 $query = "
-    SELECT 
+    SELECT
         mr.medical_record_id,
         mr.date_started,
-        mr.treatment_charge,
-        mr.prescription_charge,
+        COALESCE(t.treatment_total, 0)       AS treatment_total,
+        COALESCE(p.prescription_total, 0)    AS prescription_total,
         mr.others_charge,
-        mb.total_amount AS bill_total,
+        mb.total_amount             AS bill_total,
         mb.billing_date,
         mb.status
     FROM medical_records mr
-    INNER JOIN medical_bill mb ON mr.medical_record_id = mb.medical_record_id
+    INNER JOIN medical_bill mb 
+        ON mr.medical_record_id = mb.medical_record_id
+    LEFT JOIN (
+        SELECT medical_record_id, SUM(treatment_charge) AS treatment_total
+        FROM medical_treatments
+        GROUP BY medical_record_id
+    ) t ON mr.medical_record_id = t.medical_record_id
+    LEFT JOIN (
+        SELECT medical_record_id, SUM(prescription_charge) AS prescription_total
+        FROM medical_prescriptions
+        GROUP BY medical_record_id
+    ) p ON mr.medical_record_id = p.medical_record_id
     ORDER BY mr.medical_record_id DESC
 ";
 
@@ -23,13 +34,21 @@ $result = mysqli_query($conn, $query);
 
 if ($result) {
     while ($row = mysqli_fetch_assoc($result)) {
-        $treat = floatval($row['treatment_charge']);
-        $presc = floatval($row['prescription_charge']);
-        $other = floatval($row['others_charge']);
-        $total = $treat + $presc + $other;
+        // Calculate grand total (treatment + prescription + others)
+        $calcTotal = floatval($row['treatment_total'])
+            + floatval($row['prescription_total'])
+            + floatval($row['others_charge']);
 
-        $row['calculated_total'] = $total;
-        $row['balance'] = $total - floatval($row['bill_total']);
+        // Calculate the balance (difference between calculated total and bill total)
+        $balance = $calcTotal - floatval($row['bill_total']);
+
+        // Prevent negative balance if there's no overpayment
+        if ($balance < 0) {
+            $balance = 0;
+        }
+
+        $row['calculated_total'] = $calcTotal;
+        $row['balance'] = $balance;
         $bills[] = $row;
     }
 }
@@ -232,8 +251,8 @@ if ($result) {
                                     <tr>
                                         <td><?php echo $bill['medical_record_id']; ?></td>
                                         <td><?php echo date('F j, Y', strtotime($bill['billing_date'] ?? $bill['date_started'])); ?></td>
-                                        <td>₱<?php echo number_format($bill['treatment_charge'], 2); ?></td>
-                                        <td>₱<?php echo number_format($bill['prescription_charge'], 2); ?></td>
+                                        <td>₱<?= number_format($bill['treatment_total'], 2) ?></td>
+                                        <td>₱<?= number_format($bill['prescription_total'], 2) ?></td>
                                         <td>₱<?php echo number_format($bill['others_charge'], 2); ?></td>
                                         <td class="fw-bold text-primary">₱<?php echo number_format($bill['calculated_total'], 2); ?></td>
                                         <td>₱<?php echo number_format($bill['balance'] ?? 0, 2); ?></td>
